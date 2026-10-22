@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-slate-900 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LEROY MERLIN BRASIL - MERCHANDISING CONCEITO - Central HTML</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- LZ-String para compressão de URL e Links Compartilháveis -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#008e36', // Verde Leroy Merlin
+              600: '#00702a',
+              700: '#005820',
+              800: '#004218',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Estilização customizada para a barra de rolagem */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans antialiased overflow-hidden selection:bg-brand-500 selection:text-white">
+
+  <!-- BARRA DE NAVEGAÇÃO PRINCIPAL -->
+  <header class="bg-slate-950 border-b border-slate-800 shrink-0 z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Logo e Nome do Projeto -->
+      <div class="flex items-center gap-3">
+        <!-- Logo Oficial Completo Leroy Merlin (SVG Fiel) -->
+        <div class="h-10 w-auto flex items-center justify-center shrink-0 drop-shadow-md py-0.5">
+          <svg viewBox="0 0 280 180" class="h-full w-auto" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="140,52 245,148 35,148" fill="#78be20" />
+            <g transform="translate(140,52) rotate(-42.5)">
+              <text x="-12" y="-12" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="33" fill="#ffffff" letter-spacing="0.5">LEROY</text>
+            </g>
+            <g transform="translate(140,52) rotate(42.5)">
+              <text x="12" y="-12" text-anchor="start" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="33" fill="#ffffff" letter-spacing="0.5">MERLIN</text>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-bold text-base sm:text-lg leading-tight text-white flex items-center gap-2">
+            LEROY MERLIN BRASIL - MERCHANDISING CONCEITO
+            <span class="text-xs font-normal px-2 py-0.5 bg-brand-500/10 text-brand-500 border border-brand-500/20 rounded-full hidden lg:inline-block">Central HTML</span>
+          </h1>
+          <p class="text-xs text-slate-400">Plataforma de Compartilhamento e Visualização Dinâmica</p>
+        </div>
+      </div>
+
+      <!-- Controles Superiores -->
+      <div class="flex items-center gap-3">
+        <button onclick="openModal('modal-change-password')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-md font-medium transition flex items-center gap-1.5 border border-slate-700" title="Alterar Senha de Edição">
+          <i class="fa-solid fa-key text-brand-500"></i> <span class="hidden sm:inline">Senha de Edição</span>
+        </button>
+
+        <button onclick="openModal('modal-new-project')" class="text-xs bg-brand-500 hover:bg-brand-600 text-white px-3.5 py-1.5 rounded-md font-medium transition flex items-center gap-1.5 shadow-md shadow-brand-500/20">
+          <i class="fa-solid fa-folder-plus"></i> Novo Projeto
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main id="app-container" class="flex-1 flex overflow-hidden relative">
+    
+    <!-- MODO 1: DASHBOARD DE PROJETOS E TEMAS -->
+    <div id="view-dashboard" class="flex-1 flex flex-col md:flex-row overflow-hidden w-full">
+      
+      <!-- MENU LATERAL -->
+      <aside class="w-full md:w-80 bg-slate-950 border-r border-slate-800 flex flex-col shrink-0">
+        <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+          <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Meus Projetos / Pastas</h2>
+          <span id="projects-count" class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full">0</span>
+        </div>
+        
+        <div id="projects-list" class="flex-1 overflow-y-auto p-3 space-y-2">
+          <!-- Projetos gerados dinamicamente -->
+        </div>
+      </aside>
+
+      <!-- ÁREA CENTRAL -->
+      <section class="flex-1 flex flex-col bg-slate-900 overflow-y-auto">
+        
+        <!-- Topo do Projeto -->
+        <div id="project-header" class="p-6 border-b border-slate-800 bg-slate-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 id="current-project-title" class="text-2xl font-bold text-white">Carregando...</h2>
+              <button onclick="editCurrentProjectWithAuth()" class="text-slate-400 hover:text-brand-500 p-1 text-sm transition" title="Editar este projeto (Requer Senha)">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+            </div>
+            <p id="current-project-desc" class="text-sm text-slate-400 mt-1">Selecione ou crie um projeto para começar</p>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <button onclick="openModal('modal-new-theme')" class="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-2 shadow-lg shadow-brand-500/20">
+              <i class="fa-solid fa-code"></i> Adicionar HTML
+            </button>
+            <button onclick="shareProject()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-lg text-sm font-medium transition border border-slate-700 flex items-center gap-2">
+              <i class="fa-solid fa-share-nodes"></i> Compartilhar Projeto
+            </button>
+          </div>
+        </div>
+
+        <!-- Grade de HTMLs -->
+        <div class="p-6 flex-1">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-semibold text-slate-300 uppercase tracking-wider">HTMLs Dinâmicos Disponíveis</h3>
+            <span id="themes-count" class="text-xs text-slate-500">0 arquivos</span>
+          </div>
+
+          <div id="themes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cards carregados dinamicamente -->
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- MODO 2: VISUALIZADOR DE HTML (IFRAME) -->
+    <div id="view-preview" class="hidden absolute inset-0 bg-slate-900 flex flex-col z-10">
+      
+      <!-- BARRA DE FERRAMENTAS -->
+      <div class="bg-slate-950 border-b border-slate-800 px-4 py-2.5 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <button onclick="showDashboard()" class="text-slate-400 hover:text-white bg-slate-900 hover:bg-slate-800 px-3 py-1.5 rounded-lg text-xs transition border border-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-left"></i> Voltar ao Painel
+          </button>
+          <div class="h-4 w-px bg-slate-800"></div>
+          <div class="flex items-center gap-2">
+            <label for="theme-selector" class="text-xs text-slate-400 font-medium hidden sm:inline">HTML:</label>
+            <select id="theme-selector" onchange="changeActiveTheme(this.value)" class="bg-slate-900 text-slate-200 text-xs border border-slate-800 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-brand-500">
+            </select>
+          </div>
+        </div>
+
+        <!-- Responsividade -->
+        <div class="flex items-center gap-1 bg-slate-900 p-1 rounded-lg border border-slate-800">
+          <button onclick="setViewport('desktop')" id="btn-vp-desktop" class="p-1.5 px-2.5 text-xs text-brand-500 bg-slate-800 rounded font-medium flex items-center gap-1">
+            <i class="fa-solid fa-desktop"></i> <span class="hidden sm:inline">Desktop</span>
+          </button>
+          <button onclick="setViewport('tablet')" id="btn-vp-tablet" class="p-1.5 px-2.5 text-xs text-slate-400 hover:text-slate-200 rounded font-medium flex items-center gap-1">
+            <i class="fa-solid fa-tablet-screen-button"></i> <span class="hidden sm:inline">Tablet</span>
+          </button>
+          <button onclick="setViewport('mobile')" id="btn-vp-mobile" class="p-1.5 px-2.5 text-xs text-slate-400 hover:text-slate-200 rounded font-medium flex items-center gap-1">
+            <i class="fa-solid fa-mobile-screen-button"></i> <span class="hidden sm:inline">Mobile</span>
+          </button>
+        </div>
+
+        <!-- Ações -->
+        <div class="flex items-center gap-2">
+          <button onclick="shareSingleTheme()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 p-1.5 px-3 rounded-lg text-xs transition border border-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-link"></i> <span class="hidden sm:inline">Link Direto</span>
+          </button>
+          <button onclick="downloadCurrentHTML()" class="bg-brand-500 hover:bg-brand-600 text-white p-1.5 px-3 rounded-lg text-xs transition font-semibold flex items-center gap-1.5 shadow-md shadow-brand-500/20">
+            <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Baixar HTML</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- IFRAME -->
+      <div class="flex-1 bg-slate-950 p-4 flex items-center justify-center overflow-auto relative">
+        <div id="iframe-wrapper" class="w-full h-full bg-white rounded-lg shadow-2xl transition-all duration-300 overflow-hidden relative">
+          <iframe id="preview-iframe" class="w-full h-full border-0" title="Visualizador HTML"></iframe>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- MODAL: AUTENTICAÇÃO POR SENHA -->
+  <div id="modal-auth-password" class="hidden fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-sm w-full p-6 shadow-2xl">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-lock text-brand-500"></i> Acesso Restrito
+        </h3>
+        <button onclick="closeModal('modal-auth-password')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="text-xs text-slate-400 mb-4">Digite a senha de edição para alterar ou remover conteúdos na <strong>Central HTML</strong>.</p>
+      <form onsubmit="handleAuthenticate(event)" class="space-y-4">
+        <div>
+          <input type="password" id="auth-password-input" required placeholder="Digite a senha..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-brand-500">
+        </div>
+        <div id="auth-error-msg" class="hidden text-xs text-red-400 font-medium">
+          <i class="fa-solid fa-circle-exclamation"></i> Senha incorreta! Tente novamente.
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-auth-password')" class="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-lg shadow-md shadow-brand-500/20">Confirmar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ALTERAR SENHA -->
+  <div id="modal-change-password" class="hidden fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-sm w-full p-6 shadow-2xl">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-key text-brand-500"></i> Alterar Senha
+        </h3>
+        <button onclick="closeModal('modal-change-password')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="handleChangePassword(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Senha Atual</label>
+          <input type="password" id="curr-pass-input" required placeholder="Senha atual..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Nova Senha</label>
+          <input type="password" id="new-pass-input" required placeholder="Nova senha..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-brand-500">
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-change-password')" class="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-lg shadow-md shadow-brand-500/20">Atualizar Senha</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: CRIAR NOVO PROJETO -->
+  <div id="modal-new-project" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-md w-full p-6 shadow-2xl">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-bold text-white">Criar Novo Projeto</h3>
+        <button onclick="closeModal('modal-new-project')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="handleCreateProject(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Nome do Projeto / Pasta</label>
+          <input type="text" id="project-name-input" required placeholder="Ex: Campanha Leroy Merlin Express" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Descrição</label>
+          <textarea id="project-desc-input" rows="2" placeholder="Descrição opcional..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-brand-500"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-new-project')" class="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-lg shadow-md shadow-brand-500/20">Salvar Projeto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDITAR PROJETO / PASTA -->
+  <div id="modal-edit-project" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-md w-full p-6 shadow-2xl">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-bold text-white">Editar Projeto / Pasta</h3>
+        <button onclick="closeModal('modal-edit-project')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="handleUpdateProject(event)" class="space-y-4">
+        <input type="hidden" id="edit-project-id">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Nome do Projeto / Pasta</label>
+          <input type="text" id="edit-project-name-input" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-brand-500">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Descrição</label>
+          <textarea id="edit-project-desc-input" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-brand-500"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-edit-project')" class="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-lg shadow-md shadow-brand-500/20">Atualizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADICIONAR NOVO HTML / TEMA -->
+  <div id="modal-new-theme" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] flex flex-col">
+      <div class="flex justify-between items-center mb-4 shrink-0">
+        <h3 class="text-lg font-bold text-white">Adicionar Arquivo HTML Dinâmico</h3>
+        <button onclick="closeModal('modal-new-theme')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="handleCreateTheme(event)" class="space-y-4 flex-1 flex flex-col overflow-hidden">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Título do HTML / Tema</label>
+          <input type="text" id="theme-title-input" required placeholder="Ex: Tema Claro - Promoção de Primavera" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-brand-500">
+        </div>
+
+        <div class="flex-1 flex flex-col min-h-0">
+          <label class="block text-xs font-medium text-slate-300 mb-1">Código HTML Dinâmico</label>
+          <div class="mb-2">
+            <input type="file" id="file-uploader" accept=".html,.htm" onchange="handleFileUpload(event, 'theme-code-input', 'theme-title-input')" class="hidden">
+            <button type="button" onclick="document.getElementById('file-uploader').click()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-dashed border-slate-700 rounded-lg flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-upload"></i> Carregar arquivo .html do computador
+            </button>
+          </div>
+
+          <textarea id="theme-code-input" required placeholder="Cole o código HTML completo aqui..." class="flex-1 w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-500 resize-none"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 shrink-0">
+          <button type="button" onclick="closeModal('modal-new-theme')" class="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-lg shadow-md shadow-brand-500/20">Adicionar Tema</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDITAR HTML / TEMA EXISTENTE -->
+  <div id="modal-edit-theme" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl max-w-2xl w-full p-6 shadow-2xl max-h-[90vh] flex flex-col">
+      <div class="flex justify-between items-center mb-4 shrink-0">
+        <h3 class="text-lg font-bold text-white">Editar Arquivo HTML</h3>
+        <button onclick="closeModal('modal-edit-theme')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form onsubmit="handleUpdateTheme(event)" class="space-y-4 flex-1 flex flex-col overflow-hidden">
+        <input type="hidden" id="edit-theme-id">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Título do HTML / Tema</label>
+          <input type="text" id="edit-theme-title-input" required class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-brand-500">
+        </div>
+
+        <div class="flex-1 flex flex-col min-h-0">
+          <label class="block text-xs font-medium text-slate-300 mb-1">Código HTML Dinâmico</label>
+          <div class="mb-2">
+            <input type="file" id="file-uploader-edit" accept=".html,.htm" onchange="handleFileUpload(event, 'edit-theme-code-input', 'edit-theme-title-input')" class="hidden">
+            <button type="button" onclick="document.getElementById('file-uploader-edit').click()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-dashed border-slate-700 rounded-lg flex items-center justify-center gap-2 transition">
+              <i class="fa-solid fa-upload"></i> Substituir por arquivo .html do computador
+            </button>
+          </div>
+
+          <textarea id="edit-theme-code-input" required class="flex-1 w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-brand-500 resize-none"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 shrink-0">
+          <button type="button" onclick="closeModal('modal-edit-theme')" class="px-4 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-4 py-2 text-xs bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-lg shadow-md shadow-brand-500/20">Atualizar HTML</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPT DE LÓGICA -->
+  <script>
+    let appState = {
+      projects: [],
+      activeProjectId: null,
+      activeThemeId: null,
+      viewport: 'desktop',
+      editPassword: 'MC2026' // SENHA DEFINIDA
+    };
+
+    let pendingAuthCallback = null;
+
+    const defaultData = [
+      {
+        id: 'proj-1',
+        name: 'Projeto Exemplo - Merchandising Conceito',
+        desc: 'Coleção de HTMLs dinâmicos de teste',
+        themes: [
+          {
+            id: 'theme-1',
+            title: 'Ofertas da Semana (Tema Verde)',
+            code: `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: sans-serif; background: #f0fdf4; color: #166534; padding: 40px; text-align: center; }
+    .card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 500px; margin: auto; border-top: 5px solid #008e36; }
+    h1 { color: #008e36; }
+    button { background: #008e36; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>LEROY MERLIN BRASIL</h1>
+    <p>Este é o primeiro arquivo HTML dinâmico cadastrado na Central HTML!</p>
+    <button onclick="alert('Botão funcional do seu HTML!')">Clique aqui</button>
+  </div>
+</body>
+</html>`
+          }
+        ]
+      }
+    ];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      checkURLHash();
+      renderApp();
+    });
+
+    function loadState() {
+      const saved = localStorage.getItem('lm_sharehub_data');
+      if (saved) {
+        try {
+          appState.projects = JSON.parse(saved);
+        } catch(e) {
+          appState.projects = defaultData;
+        }
+      } else {
+        appState.projects = defaultData;
+        saveState();
+      }
+
+      const savedPass = localStorage.getItem('lm_sharehub_pass');
+      if (savedPass) {
+        appState.editPassword = savedPass;
+      }
+
+      if (appState.projects.length > 0) {
+        appState.activeProjectId = appState.projects[0].id;
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('lm_sharehub_data', JSON.stringify(appState.projects));
+      localStorage.setItem('lm_sharehub_pass', appState.editPassword);
+    }
+
+    // AUTENTICAÇÃO COM SENHA
+    function requestAuthentication(callback) {
+      pendingAuthCallback = callback;
+      document.getElementById('auth-password-input').value = '';
+      document.getElementById('auth-error-msg').classList.add('hidden');
+      openModal('modal-auth-password');
+    }
+
+    function handleAuthenticate(e) {
+      e.preventDefault();
+      const inputPass = document.getElementById('auth-password-input').value;
+      if (inputPass === appState.editPassword) {
+        closeModal('modal-auth-password');
+        if (typeof pendingAuthCallback === 'function') {
+          pendingAuthCallback();
+          pendingAuthCallback = null;
+        }
+      } else {
+        document.getElementById('auth-error-msg').classList.remove('hidden');
+      }
+    }
+
+    function handleChangePassword(e) {
+      e.preventDefault();
+      const curr = document.getElementById('curr-pass-input').value;
+      const newP = document.getElementById('new-pass-input').value;
+
+      if (curr === appState.editPassword) {
+        appState.editPassword = newP;
+        saveState();
+        alert('Senha de edição alterada com sucesso!');
+        closeModal('modal-change-password');
+        e.target.reset();
+      } else {
+        alert('Senha atual incorreta!');
+      }
+    }
+
+    function checkURLHash() {
+      const hash = window.location.hash;
+      if (hash.startsWith('#share=')) {
+        try {
+          const compressed = hash.replace('#share=', '');
+          const decompressed = LZString.decompressFromEncodedURIComponent(compressed);
+          if (decompressed) {
+            const sharedProject = JSON.parse(decompressed);
+            appState.projects.unshift(sharedProject);
+            appState.activeProjectId = sharedProject.id;
+            if (sharedProject.themes.length > 0) {
+              openPreview(sharedProject.themes[0].id);
+            }
+          }
+        } catch(e) {
+          console.error("Erro ao ler hash", e);
+        }
+      }
+    }
+
+    function renderApp() {
+      renderProjectsList();
+      renderCurrentProject();
+    }
+
+    function renderProjectsList() {
+      const container = document.getElementById('projects-list');
+      document.getElementById('projects-count').textContent = appState.projects.length;
+
+      container.innerHTML = appState.projects.map(proj => `
+        <div onclick="selectProject('${proj.id}')" class="p-3 rounded-lg cursor-pointer transition flex items-center justify-between group ${proj.id === appState.activeProjectId ? 'bg-brand-500/10 border border-brand-500/30 text-white' : 'hover:bg-slate-900 text-slate-400'}">
+          <div class="truncate flex-1 pr-2">
+            <h4 class="text-sm font-semibold truncate ${proj.id === appState.activeProjectId ? 'text-brand-500' : 'text-slate-200'}">${escapeHtml(proj.name)}</h4>
+            <p class="text-xs text-slate-500">${proj.themes.length} arquivo(s)</p>
+          </div>
+          <div class="flex items-center gap-1 opacity-80 group-hover:opacity-100">
+            <button onclick="openEditProjectModalWithAuth(event, '${proj.id}')" class="text-slate-500 hover:text-brand-500 p-1 transition" title="Editar nome/descrição (Requer Senha)">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+            ${appState.projects.length > 1 ? `<button onclick="deleteProjectWithAuth(event, '${proj.id}')" class="text-slate-500 hover:text-red-400 p-1 transition" title="Excluir pasta (Requer Senha)"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCurrentProject() {
+      const proj = appState.projects.find(p => p.id === appState.activeProjectId);
+      if (!proj) return;
+
+      document.getElementById('current-project-title').textContent = proj.name;
+      document.getElementById('current-project-desc').textContent = proj.desc || 'Sem descrição';
+      document.getElementById('themes-count').textContent = `${proj.themes.length} arquivos`;
+
+      const grid = document.getElementById('themes-grid');
+      
+      if (proj.themes.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full border-2 border-dashed border-slate-800 rounded-xl p-8 text-center">
+            <p class="text-slate-500 text-sm mb-3">Nenhum arquivo HTML adicionado neste projeto.</p>
+            <button onclick="openModal('modal-new-theme')" class="text-xs bg-brand-500 hover:bg-brand-600 text-white px-3.5 py-2 rounded-md font-medium">Adicionar HTML Agora</button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = proj.themes.map(theme => `
+        <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden hover:border-slate-700 transition flex flex-col group">
+          <div class="p-4 border-b border-slate-800/80 flex-1">
+            <div class="flex items-start justify-between gap-2">
+              <h4 class="font-bold text-white text-base group-hover:text-brand-500 transition">${escapeHtml(theme.title)}</h4>
+              <div class="flex items-center gap-1.5">
+                <button onclick="openEditThemeModalWithAuth('${theme.id}')" class="text-slate-500 hover:text-brand-500 text-xs p-1 transition" title="Editar / Substituir HTML (Requer Senha)"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="deleteThemeWithAuth('${theme.id}')" class="text-slate-600 hover:text-red-400 text-xs p-1 transition" title="Excluir HTML (Requer Senha)"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="p-3 bg-slate-900/50 border-t border-slate-800/50 flex items-center justify-between gap-2">
+            <button onclick="openPreview('${theme.id}')" class="flex-1 bg-brand-500/10 hover:bg-brand-500 text-brand-500 hover:text-white border border-brand-500/20 py-1.5 rounded-lg text-xs font-semibold transition text-center">
+              <i class="fa-solid fa-eye"></i> Visualizar
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectProject(id) {
+      appState.activeProjectId = id;
+      renderApp();
+    }
+
+    function openPreview(themeId) {
+      const proj = appState.projects.find(p => p.id === appState.activeProjectId);
+      if (!proj) return;
+
+      appState.activeThemeId = themeId;
+      const select = document.getElementById('theme-selector');
+      select.innerHTML = proj.themes.map(t => `<option value="${t.id}" ${t.id === themeId ? 'selected' : ''}>${escapeHtml(t.title)}</option>`).join('');
+
+      updateIframeContent();
+      document.getElementById('view-dashboard').classList.add('hidden');
+      document.getElementById('view-preview').classList.remove('hidden');
+    }
+
+    function showDashboard() {
+      document.getElementById('view-preview').classList.add('hidden');
+      document.getElementById('view-dashboard').classList.remove('hidden');
+    }
+
+    function changeActiveTheme(themeId) {
+      appState.activeThemeId = themeId;
+      updateIframeContent();
+    }
+
+    function updateIframeContent() {
+      const proj = appState.projects.find(p => p.id === appState.activeProjectId);
+      if (!proj) return;
+
+      const theme = proj.themes.find(t => t.id === appState.activeThemeId);
+      if (!theme) return;
+
+      const iframe = document.getElementById('preview-iframe');
+      iframe.srcdoc = theme.code;
+    }
+
+    function setViewport(type) {
+      appState.viewport = type;
+      const wrapper = document.getElementById('iframe-wrapper');
+
+      ['desktop', 'tablet', 'mobile'].forEach(vp => {
+        const btn = document.getElementById(`btn-vp-${vp}`);
+        if (vp === type) {
+          btn.className = 'p-1.5 px-2.5 text-xs text-brand-500 bg-slate-800 rounded font-medium flex items-center gap-1';
+        } else {
+          btn.className = 'p-1.5 px-2.5 text-xs text-slate-400 hover:text-slate-200 rounded font-medium flex items-center gap-1';
+        }
+      });
+
+      if (type === 'desktop') {
+        wrapper.style.width = '100%';
+        wrapper.style.height = '100%';
+      } else if (type === 'tablet') {
+        wrapper.style.width = '768px';
+        wrapper.style.height = '1024px';
+        wrapper.style.maxHeight = '100%';
+      } else if (type === 'mobile') {
+        wrapper.style.width = '375px';
+        wrapper.style.height = '667px';
+        wrapper.style.maxHeight = '100%';
+      }
+    }
+
+    function handleCreateProject(e) {
+      e.preventDefault();
+      const name = document.getElementById('project-name-input').value;
+      const desc = document.getElementById('project-desc-input').value;
+
+      const newProj = {
+        id: 'proj-' + Date.now(),
+        name,
+        desc,
+        themes: []
+      };
+
+      appState.projects.push(newProj);
+      appState.activeProjectId = newProj.id;
+      saveState();
+      renderApp();
+      closeModal('modal-new-project');
+      e.target.reset();
+    }
+
+    // AÇÕES PROTEGIDAS POR SENHA PARA PROJETOS
+    function openEditProjectModalWithAuth(e, id) {
+      if (e) e.stopPropagation();
+      requestAuthentication(() => {
+        const proj = appState.projects.find(p => p.id === id);
+        if (!proj) return;
+
+        document.getElementById('edit-project-id').value = proj.id;
+        document.getElementById('edit-project-name-input').value = proj.name;
+        document.getElementById('edit-project-desc-input').value = proj.desc || '';
+
+        openModal('modal-edit-project');
+      });
+    }
+
+    function editCurrentProjectWithAuth() {
+      if (appState.activeProjectId) {
+        openEditProjectModalWithAuth(null, appState.activeProjectId);
+      }
+    }
+
+    function handleUpdateProject(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-project-id').value;
+      const proj = appState.projects.find(p => p.id === id);
+      if (!proj) return;
+
+      proj.name = document.getElementById('edit-project-name-input').value;
+      proj.desc = document.getElementById('edit-project-desc-input').value;
+
+      saveState();
+      renderApp();
+      closeModal('modal-edit-project');
+    }
+
+    function deleteProjectWithAuth(e, id) {
+      e.stopPropagation();
+      requestAuthentication(() => {
+        if (confirm('Deseja realmente excluir esta pasta e todos os seus HTMLs?')) {
+          appState.projects = appState.projects.filter(p => p.id !== id);
+          if (appState.projects.length > 0) {
+            appState.activeProjectId = appState.projects[0].id;
+          } else {
+            appState.activeProjectId = null;
+          }
+          saveState();
+          renderApp();
+        }
+      });
+    }
+
+    // AÇÕES PROTEGIDAS POR SENHA PARA HTMLs/TEMAS
+    function openEditThemeModalWithAuth(themeId) {
+      requestAuthentication(() => {
+        const proj = appState.projects.find(p => p.id === appState.activeProjectId);
+        if (!proj) return;
+
+        const theme = proj.themes.find(t => t.id === themeId);
+        if (!theme) return;
+
+        document.getElementById('edit-theme-id').value = theme.id;
+        document.getElementById('edit-theme-title-input').value = theme.title;
+        document.getElementById('edit-theme-code-input').value = theme.code;
+
+        openModal('modal-edit-theme');
+      });
+    }
+
+    function handleUpdateTheme(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit-theme-id').value;
+      const title = document.getElementById('edit-theme-title-input').value;
+      const code = document.getElementById('edit-theme-code-input').value;
+
+      const proj = appState.projects.find(p => p.id === appState.activeProjectId);
+      if (!proj) return;
+
+      const theme = proj.themes.find(t => t.id === id);
+      if (!theme) return;
+
+      theme.title = title;
+      theme.code = code;
+
+      saveState();
+      renderApp();
+      closeModal('modal-edit-theme');
+    }
+
+    function deleteThemeWithAuth(themeId) {
+      requestAuthentication(() => {
+        const proj = appState.projects.find(p => p.id === appState.activeProjectId);
+        if (!proj) return;
+
+        if (confirm('Deseja realmente excluir este arquivo HTML?')) {
+          proj.themes = proj.themes.filter(t => t.id !== themeId);
+          saveState();
+          renderApp();
+        }
+      });
+    }
+
+    function handleCreateTheme(e) {
+      e.preventDefault();
+      const title = document.getElementById('theme-title-input').value;
+      const code = document.getElementById('theme-code-input').value;
+
+      const proj = appState.projects.find(p => p.id === appState.activeProjectId);
+      if (!proj) return;
+
+      proj.themes.push({
+        id: 'theme-' + Date.now(),
+        title,
+        code
+      });
+
+      saveState();
+      renderApp();
+      closeModal('modal-new-theme');
+      e.target.reset();
+    }
+
+    function handleFileUpload(e, targetCodeId, targetTitleId) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        document.getElementById(targetCodeId).value = evt.target.result;
+        if (targetTitleId && !document.getElementById(targetTitleId).value) {
+          document.getElementById(targetTitleId).value = file.name.replace(/\.[^/.]+$/, "");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function shareProject() {
+      const proj = appState.projects.find(p => p.id === appState.activeProjectId);
+      if (!proj) return;
+
+      const json = JSON.stringify(proj);
+      const compressed = LZString.compressToEncodedURIComponent(json);
+      const url = `${window.location.origin}${window.location.pathname}#share=${compressed}`;
+
+      navigator.clipboard.writeText(url).then(() => {
+        alert('Link de compartilhamento copiado! Qualquer pessoa com o link poderá visualizar este projeto.');
+      }).catch(() => {
+        prompt('Copie o link abaixo para compartilhar:', url);
+      });
+    }
+
+    function shareSingleTheme() {
+      shareProject();
+    }
+
+    function downloadCurrentHTML() {
+      const proj = appState.projects.find(p => p.id === appState.activeProjectId);
+      if (!proj) return;
+
+      const theme = proj.themes.find(t => t.id === appState.activeThemeId);
+      if (!theme) return;
+
+      const blob = new Blob([theme.code], { type: 'text/html' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${theme.title.toLowerCase().replace(/[^a-z0-9]/g, '_')}.html`;
+      a.click();
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>

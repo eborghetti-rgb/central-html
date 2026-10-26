@@ -7,17 +7,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            /* Paleta de Cores Leroy Merlin + Tons Modernos */
+            /* Paleta Leroy Merlin + Tons Institucionais */
             --leroy-green: #00A650;
             --leroy-green-hover: #008f45;
             --leroy-green-light: #e6f4ea;
+            --compacta-purple: #805ad5;
+            --express-blue: #3182ce;
             --light-bg: #f4f7f6; 
             --box-bg: #ffffff;
             --text-main: #2d3748;
             --text-muted: #718096;
             --border-color: #e2e8f0;
             
-            /* Sombras modernas */
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
             --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
             --shadow-hover: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
@@ -36,9 +37,9 @@
         header {
             background: linear-gradient(135deg, #00A650 0%, #007D3C 100%);
             color: white;
-            padding: 25px 20px;
+            padding: 22px 20px;
             text-align: center;
-            font-size: 26px;
+            font-size: 25px;
             font-weight: 800;
             letter-spacing: 0.5px;
             box-shadow: var(--shadow-md);
@@ -46,33 +47,33 @@
 
         .container { 
             max-width: 98%; 
-            margin: 30px auto; 
-            padding: 0 20px; 
+            margin: 25px auto; 
+            padding: 0 15px; 
         }
 
         /* Estrutura dos Quadrantes */
         .quadrante {
             background-color: var(--box-bg);
             border-radius: 12px; 
-            padding: 25px; 
-            margin-bottom: 25px;
+            padding: 22px; 
+            margin-bottom: 22px;
             box-shadow: var(--shadow-sm);
             border: 1px solid rgba(0,0,0,0.05);
-            transition: all 0.4s ease; 
+            transition: all 0.35s ease; 
         }
 
-        /* --- TEMAS DE CORES NOS QUADRANTES --- */
+        /* Temas Dinâmicos */
         .quadrante.theme-gsb { background-color: #eef7f0 !important; border-color: #cce3d3 !important; }
         .quadrante.theme-compacta { background-color: #f5effc !important; border-color: #dcc8f3 !important; }
         .quadrante.theme-express { background-color: #eff6fb !important; border-color: #cce0f0 !important; }
 
         .quadrante-title {
-            font-size: 18px; 
+            font-size: 17px; 
             font-weight: 800; 
             color: var(--leroy-green);
-            margin-bottom: 20px; 
+            margin-bottom: 18px; 
             border-bottom: 2px solid var(--leroy-green-light);
-            padding-bottom: 10px; 
+            padding-bottom: 8px; 
             display: flex; 
             justify-content: space-between;
             align-items: center;
@@ -81,51 +82,142 @@
             transition: color 0.3s;
         }
 
-        .theme-compacta .quadrante-title { color: #6b46c1; border-bottom-color: #e9d8fd; }
-        .theme-express .quadrante-title { color: #3182ce; border-bottom-color: #bee3f8; }
+        .theme-compacta .quadrante-title { color: var(--compacta-purple); border-bottom-color: #e9d8fd; }
+        .theme-express .quadrante-title { color: var(--express-blue); border-bottom-color: #bee3f8; }
 
-        /* Botões de Filtro Coloridos e Destacados */
+        /* Badge do nome da loja nos quadrantes */
+        .badge-loja-selecionada {
+            background-color: #ffffff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            text-transform: none;
+            letter-spacing: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .badge-loja-selecionada:empty { display: none; }
+
+        /* Grade dos 4 Cards de Totais */
+        .grid-totais-brasil {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .kpi-total-box {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 16px 14px;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .kpi-total-box:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .kpi-total-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+        }
+        .kpi-total-box.card-brasil::before { background-color: #4a5568; }
+        .kpi-total-box.card-gsb::before { background-color: var(--leroy-green); }
+        .kpi-total-box.card-compacta::before { background-color: var(--compacta-purple); }
+        .kpi-total-box.card-express::before { background-color: var(--express-blue); }
+
+        .kpi-total-box span.title-kpi {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
+        }
+        .kpi-total-box strong.val-kpi {
+            display: block;
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+        .kpi-total-box.card-brasil strong { color: #2d3748; }
+        .kpi-total-box.card-gsb strong { color: var(--leroy-green); }
+        .kpi-total-box.card-compacta strong { color: var(--compacta-purple); }
+        .kpi-total-box.card-express strong { color: var(--express-blue); }
+
+        /* Grade dos 2 Gráficos do Topo */
+        .grid-graficos-topo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        .grafico-card {
+            background-color: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        .grafico-card-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .grafico-wrapper-topo {
+            position: relative;
+            height: 230px;
+            width: 100%;
+        }
+
+        /* Botões de Filtro */
         .filters { 
             display: flex; 
             gap: 12px; 
-            margin-bottom: 20px; 
+            margin-bottom: 18px; 
             flex-wrap: wrap; 
         }
         .filter-btn {
-            padding: 12px 24px; 
-            /* ALTERAÇÃO: Fundo branco e borda nítida para não sumir no quadrante colorido */
+            padding: 11px 22px; 
             background-color: #ffffff; 
             color: #4a5568;
             border: 2px solid #cbd5e0;
             border-radius: 30px; 
             cursor: pointer; 
             font-weight: 700; 
-            font-size: 14px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 13.5px;
+            transition: all 0.25s ease;
             flex: 1 1 auto;
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Sombra leve para destacar */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
-        
         .filter-btn:hover { 
             transform: translateY(-2px); 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
         }
-        
-        /* Cores Ativas Específicas por Botão */
-        .filter-btn[data-concept="TODAS LOJAS"]:hover { border-color: #4a5568; color: #4a5568; }
         .filter-btn[data-concept="TODAS LOJAS"].active { background-color: #4a5568; border-color: #4a5568; color: white; box-shadow: 0 4px 10px rgba(74,85,104,0.3); transform: translateY(-2px); }
+        .filter-btn[data-concept="GSB"].active { background-color: var(--leroy-green); border-color: var(--leroy-green); color: white; box-shadow: 0 4px 10px rgba(0,166,80,0.3); transform: translateY(-2px); }
+        .filter-btn[data-concept="COMPACTA"].active { background-color: var(--compacta-purple); border-color: var(--compacta-purple); color: white; box-shadow: 0 4px 10px rgba(128,90,213,0.3); transform: translateY(-2px); }
+        .filter-btn[data-concept="EXPRESS"].active { background-color: var(--express-blue); border-color: var(--express-blue); color: white; box-shadow: 0 4px 10px rgba(49,130,206,0.3); transform: translateY(-2px); }
 
-        .filter-btn[data-concept="GSB"]:hover { border-color: #00A650; color: #00A650; }
-        .filter-btn[data-concept="GSB"].active { background-color: #00A650; border-color: #00A650; color: white; box-shadow: 0 4px 10px rgba(0,166,80,0.3); transform: translateY(-2px); }
-
-        .filter-btn[data-concept="COMPACTA"]:hover { border-color: #805ad5; color: #805ad5; }
-        .filter-btn[data-concept="COMPACTA"].active { background-color: #805ad5; border-color: #805ad5; color: white; box-shadow: 0 4px 10px rgba(128,90,213,0.3); transform: translateY(-2px); }
-
-        .filter-btn[data-concept="EXPRESS"]:hover { border-color: #3182ce; color: #3182ce; }
-        .filter-btn[data-concept="EXPRESS"].active { background-color: #3182ce; border-color: #3182ce; color: white; box-shadow: 0 4px 10px rgba(49,130,206,0.3); transform: translateY(-2px); }
-
-        /* Nova Linha: Select + Maior + Menor */
+        /* Linha Select + Maior + Menor */
         .store-selection-row {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -133,101 +225,99 @@
             align-items: stretch;
         }
         .select-container { display: flex; align-items: center; }
-        
         select {
             width: 100%; 
             height: 100%;
-            min-height: 54px;
-            padding: 14px; 
+            min-height: 52px;
+            padding: 13px; 
             border: 2px solid var(--border-color);
             border-radius: 8px; 
-            font-size: 16px; 
+            font-size: 15px; 
             font-weight: 600;
             color: var(--text-main);
             background-color: #fff; 
             cursor: pointer;
-            transition: all 0.3s ease;
             outline: none;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: border-color 0.25s;
         }
         select:focus { border-color: var(--leroy-green); }
 
-        /* Caixas Maior/Menor Loja */
         .highlight-box {
-            background-color: rgba(255, 255, 255, 0.9); /* Mais branca para destacar */
+            background-color: rgba(255, 255, 255, 0.95);
             border: 2px dashed var(--border-color);
             border-radius: 8px;
-            padding: 10px 15px;
+            padding: 10px 14px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .highlight-box span.title-box { font-size: 11px; color: var(--text-muted); font-weight: 800; margin-bottom: 4px; text-transform: uppercase; }
-        .highlight-box strong { font-size: 16px; transition: color 0.3s; color: var(--text-main); }
+        .highlight-box strong { font-size: 15px; color: var(--text-main); }
         
-        .theme-gsb .highlight-box { border-color: #00A650; }
-        .theme-gsb .highlight-box strong { color: #00A650; }
-        .theme-compacta .highlight-box { border-color: #805ad5; }
-        .theme-compacta .highlight-box strong { color: #805ad5; }
-        .theme-express .highlight-box { border-color: #3182ce; }
-        .theme-express .highlight-box strong { color: #3182ce; }
+        .theme-gsb .highlight-box { border-color: var(--leroy-green); }
+        .theme-gsb .highlight-box strong { color: var(--leroy-green); }
+        .theme-compacta .highlight-box { border-color: var(--compacta-purple); }
+        .theme-compacta .highlight-box strong { color: var(--compacta-purple); }
+        .theme-express .highlight-box { border-color: var(--express-blue); }
+        .theme-express .highlight-box strong { color: var(--express-blue); }
 
-        /* Grid de Informações Principais */
-        .grid-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        /* Grids de Informações */
+        .grid-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 13px; }
 
         .info-box {
             background-color: var(--box-bg); 
             border: 1px solid var(--border-color);
             border-radius: 10px; 
-            padding: 15px; 
+            padding: 14px; 
             text-align: center;
             display: flex; flex-direction: column; justify-content: center;
-            transition: all 0.3s ease; 
             position: relative; overflow: hidden; box-shadow: var(--shadow-sm);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
-        .info-box:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); z-index: 1; }
-        
+        .info-box:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); z-index: 1; }
         .info-box::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-            background: var(--leroy-green); transform: scaleX(0); transition: transform 0.3s ease;
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: var(--leroy-green); transform: scaleX(0); transition: transform 0.25s ease;
         }
         .info-box:hover::before { transform: scaleX(1); }
-        .theme-compacta .info-box::before { background: #805ad5; }
-        .theme-express .info-box::before { background: #3182ce; }
+        .theme-compacta .info-box::before { background: var(--compacta-purple); }
+        .theme-express .info-box::before { background: var(--express-blue); }
 
-        .info-box span.title-box { display: block; font-size: 11px; color: var(--text-muted); font-weight: 800; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .info-box strong { font-size: 15px; color: var(--text-main); display: block; line-height: 1.5; }
+        .info-box span.title-box { display: block; font-size: 10.5px; color: var(--text-muted); font-weight: 800; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .info-box strong { font-size: 14.5px; color: var(--text-main); display: block; line-height: 1.4; }
 
         .destaque-caixa { background: linear-gradient(135deg, #e6f4ea 0%, #d1f0db 100%); border: 1px solid #b2dfc4; }
         .theme-compacta .destaque-caixa { background: linear-gradient(135deg, #faf5ff 0%, #e9d8fd 100%); border-color: #d6bcfa; }
         .theme-express .destaque-caixa { background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%); border-color: #90cdf4; }
-        
         .destaque-caixa span.title-box { color: var(--leroy-green); }
         .theme-compacta .destaque-caixa span.title-box { color: #6b46c1; }
-        .theme-express .destaque-caixa span.title-box { color: #3182ce; }
+        .theme-express .destaque-caixa span.title-box { color: var(--express-blue); }
         .destaque-caixa::before { display: none; }
 
-        .chart-container { position: relative; height: 400px; width: 100%; background: #fff; border-radius: 8px; padding: 10px; }
+        .chart-container { position: relative; height: 380px; width: 100%; background: #fff; border-radius: 8px; padding: 10px; }
 
+        @media (max-width: 900px) {
+            .grid-totais-brasil { grid-template-columns: repeat(2, 1fr); }
+            .grid-graficos-topo { grid-template-columns: 1fr; }
+        }
         @media (max-width: 768px) {
-            header { font-size: 20px; padding: 20px 15px; }
-            .container { padding: 0 10px; margin: 15px auto; }
-            .quadrante { padding: 15px; }
+            header { font-size: 20px; padding: 18px 12px; }
+            .container { padding: 0 8px; margin: 15px auto; }
+            .quadrante { padding: 14px; }
             .store-selection-row { grid-template-columns: 1fr; }
-            .grid-info { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
-            .filter-btn { padding: 10px; font-size: 13px; flex: 1 1 40%; }
-            .chart-container { height: 300px; }
-            .info-box { padding: 12px; }
-            .info-box strong { font-size: 14px; }
+            .grid-info { grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 9px; }
+            .filter-btn { padding: 9px; font-size: 12.5px; flex: 1 1 45%; }
+            .chart-container { height: 290px; }
+            .grafico-wrapper-topo { height: 190px; }
         }
         @media (max-width: 480px) {
-            .quadrante-title { flex-direction: column; text-align: center; gap: 10px; }
+            .grid-totais-brasil { grid-template-columns: 1fr; }
+            .quadrante-title { flex-direction: column; text-align: center; gap: 8px; }
             .grid-info { grid-template-columns: 1fr; }
             .filter-btn { flex: 1 1 100%; }
-            .chart-container { height: 250px; }
         }
     </style>
 </head>
@@ -238,11 +328,60 @@
     </header>
 
     <div class="container">
-        <!-- QUADRANTE LOJAS BRASIL -->
+        
+        <!-- QUADRANTE PRINCIPAL DO TOPO: TOTAIS + 2 GRÁFICOS LADO A LADO -->
+        <div class="quadrante" id="quadrante-resumo-brasil">
+            <!-- 4 QUADROS DE TOTAIS -->
+            <div class="grid-totais-brasil">
+                <div class="kpi-total-box card-brasil">
+                    <span class="title-kpi">TOTAL LOJAS BRASIL</span>
+                    <strong class="val-kpi" id="kpi-total-brasil">53</strong>
+                </div>
+                <div class="kpi-total-box card-gsb">
+                    <span class="title-kpi">TOTAL GSB BRASIL</span>
+                    <strong class="val-kpi" id="kpi-total-gsb">46</strong>
+                </div>
+                <div class="kpi-total-box card-compacta">
+                    <span class="title-kpi">TOTAL COMPACTA BRASIL</span>
+                    <strong class="val-kpi" id="kpi-total-compacta">1</strong>
+                </div>
+                <div class="kpi-total-box card-express">
+                    <span class="title-kpi">TOTAL EXPRESS BRASIL</span>
+                    <strong class="val-kpi" id="kpi-total-express">6</strong>
+                </div>
+            </div>
+
+            <!-- 2 GRÁFICOS VERTICAIS LADO A LADO -->
+            <div class="grid-graficos-topo">
+                <!-- Gráfico 1: Lojas por Regional -->
+                <div class="grafico-card">
+                    <div class="grafico-card-title">
+                        <span>Lojas por Regional</span>
+                        <span id="badge-filtro-regional" style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: #edf2f7; color: #4a5568;">TODAS LOJAS</span>
+                    </div>
+                    <div class="grafico-wrapper-topo">
+                        <canvas id="chartRegional"></canvas>
+                    </div>
+                </div>
+
+                <!-- Gráfico 2: Lojas por Público AB e BC -->
+                <div class="grafico-card">
+                    <div class="grafico-card-title">
+                        <span>Lojas por Público Predominante (AB / BC)</span>
+                        <span id="badge-filtro-publico" style="font-size: 11px; padding: 2px 8px; border-radius: 12px; background: #edf2f7; color: #4a5568;">TODAS LOJAS</span>
+                    </div>
+                    <div class="grafico-wrapper-topo">
+                        <canvas id="chartPublico"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUADRANTE 1: LOJAS BRASIL (FILTROS E SELEÇÃO) -->
         <div class="quadrante" id="quadrante-1">
             <div class="quadrante-title">
                 <span>LOJAS BRASIL</span>
-                <span id="total-lojas" style="background-color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 14px; color: var(--text-main); border: 1px solid var(--border-color);">Qtd: 0</span>
+                <span id="total-lojas" style="background-color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 13px; color: var(--text-main); border: 1px solid var(--border-color);">Qtd: 0</span>
             </div>
             
             <div class="filters" id="filters">
@@ -252,7 +391,6 @@
                 <button class="filter-btn" data-concept="EXPRESS">EXPRESS</button>
             </div>
 
-            <!-- FILTRO DIVIDIDO EM 3 -->
             <div class="store-selection-row">
                 <div class="select-container">
                     <select id="loja-select">
@@ -270,9 +408,12 @@
             </div>
         </div>
 
-        <!-- QUADRANTE INFORMAÇÕES GERAIS -->
+        <!-- QUADRANTE 2: INFORMAÇÕES GERAIS -->
         <div class="quadrante" id="quadrante-2">
-            <div class="quadrante-title">INFORMAÇÕES GERAIS</div>
+            <div class="quadrante-title">
+                <span>INFORMAÇÕES GERAIS</span>
+                <span class="badge-loja-selecionada badge-quadrante"></span>
+            </div>
             <div class="grid-info" id="info-gerais">
                 <div class="info-box"><span class="title-box">01 - CONCEITO</span><strong id="val-conceito">-</strong></div>
                 <div class="info-box"><span class="title-box">02 - REGIONAL</span><strong id="val-regional">-</strong></div>
@@ -286,9 +427,12 @@
             </div>
         </div>
 
-        <!-- QUADRANTE ÁREAS -->
+        <!-- QUADRANTE 3: ÁREAS -->
         <div class="quadrante" id="quadrante-3">
-            <div class="quadrante-title">ÁREAS (m² & Venda/m²)</div>
+            <div class="quadrante-title">
+                <span>ÁREAS (m² & Venda/m²)</span>
+                <span class="badge-loja-selecionada badge-quadrante"></span>
+            </div>
             <div class="grid-info" id="info-areas">
                 <div class="info-box"><span class="title-box">01 - MATERIAIS</span><strong id="val-materiais">-</strong></div>
                 <div class="info-box"><span class="title-box">02 - MADEIRAS</span><strong id="val-madeiras">-</strong></div>
@@ -315,9 +459,12 @@
             </div>
         </div>
 
-        <!-- QUADRANTE GRÁFICO -->
+        <!-- QUADRANTE 4: GRÁFICO SEÇÕES -->
         <div class="quadrante" id="quadrante-grafico" style="display: none;">
-            <div class="quadrante-title">DESEMPENHO POR SEÇÃO: m² vs Vendas Projetadas</div>
+            <div class="quadrante-title">
+                <span>DESEMPENHO POR SEÇÃO: m² vs Vendas Projetadas</span>
+                <span class="badge-loja-selecionada badge-quadrante"></span>
+            </div>
             <div class="chart-container">
                 <canvas id="comboChart"></canvas>
             </div>
@@ -332,22 +479,129 @@
                         today.getFullYear();
         document.getElementById('main-header').innerText += dateStr;
 
-        // Base 100% Completa (53 Lojas)
-        const rawData = [{"l":"Brasília Norte","rg":"Centro Nordeste","c":"GSB","p":"AB","i":"2011-12-09","e":"PRÓPRIO","cl":"8840","ck":"P: 9 | G: 2 | S: 6 | T: 17","po":"3","pn":"108","rv":"36º","m2":["485","752","504","363","651","995","1324","278","473","851","588","397","451","172","0","212","344","4032","8840"],"sd":[8724390.0,5504740.0,19273600.0,9165240.0,9212950.0,14429200.0,15895400.0,6127010.0,10336500.0,10166600.0,7027400.0,5969570.0,11190700.0,0,0,0,0,0,0]},{"l":"Brasília Sul","rg":"Centro Nordeste","c":"GSB","p":"AB","i":"2005-10-26","e":"PRÓPRIO","cl":"12051","ck":"P: 0 | G: 10 | S: 6 | T: 16","po":"4","pn":"93","rv":"17º","m2":["631","1055","703","387","805","987","1322","290","607","1192","727","898","253","96","1509","295","294","1896","12051"],"sd":[11614600.0,9801970.0,25877300.0,11737700.0,14560600.0,21777900.0,22856900.0,8387780.0,14252200.0,17922500.0,10166200.0,9284160.0,17619800.0,0,0,0,0,0,0]},{"l":"Campo Grande","rg":"Centro Nordeste","c":"GSB","p":"BC","i":"2015-10-20","e":"PRÓPRIO","cl":"7972","ck":"P: 4 | G: 4 | S: 4 | T: 12","po":"3","pn":"98","rv":"39º","m2":["207","692","538","436","913","805","1148","206","431","780","514","373","336","245","0","193","155","4826","7972"],"sd":[8462730.0,5213930.0,21594800.0,7353610.0,18998300.0,11979700.0,12838900.0,3770900.0,6359580.0,7757430.0,5908400.0,3163080.0,7984240.0,0,0,0,0,0,0]},{"l":"Fortaleza","rg":"Centro Nordeste","c":"GSB","p":"AB","i":"2015-04-15","e":"ALUGADO","cl":"9782","ck":"P: 8 | G: 4 | S: 11 | T: 23","po":"2","pn":"112","rv":"8º","m2":["486","730","387","318","879","1274","1022","240","648","873","568","493","358","105","680","358","363","4445","9782"],"sd":[15204000.0,13117200.0,38310400.0,16274000.0,19468000.0,23983300.0,22660300.0,11905200.0,18070100.0,20922000.0,13629300.0,10472900.0,16924600.0,0,0,0,0,0,0]},{"l":"Goiania","rg":"Centro Nordeste","c":"GSB","p":"BC","i":"2008-10-30","e":"ALUGADO","cl":"8118","ck":"P: 7 | G: 0 | S: 6 | T: 13","po":"4","pn":"69","rv":"19º","m2":["236","673","268","246","468","908","1089","197","444","742","419","317","222","137","1337","263","152","0","8118"],"sd":[12326500.0,6493000.0,29213500.0,11515000.0,19559800.0,30298900.0,19523600.0,6410390.0,10778200.0,12057400.0,9465230.0,4897370.0,18066500.0,0,0,0,0,0,0]},{"l":"Jardim Botânico Df","rg":"Centro Nordeste","c":"GSB","p":"AB","i":"2025-02-07","e":"ALUGADO","cl":"5420","ck":"P: 6 | G: 0 | S: 6 | T: 12","po":"4","pn":"70","rv":"46º","m2":["100","427","324","196","570","661","695","197","309","399","302","335","338","305","0","185","77","179","5420"],"sd":[2891470.0,2307230.0,8174550.0,4006990.0,4854420.0,5956430.0,10018300.0,2560580.0,4947100.0,4696340.0,3440730.0,2636570.0,4497570.0,0,0,0,0,0,0]},{"l":"Maceio","rg":"Centro Nordeste","c":"GSB","p":"BC","i":"2016-05-18","e":"ALUGADO","cl":"9934","ck":"P: 11 | G: 0 | S: 3 | T: 14","po":"3","pn":"111","rv":"20º","m2":["216","613","409","329","969","1187","1281","257","509","724","527","592","427","228","1118","266","282","3995","9934"],"sd":[24900900.0,7667520.0,27636800.0,12117200.0,22166700.0,19214300.0,18769600.0,7581980.0,13921000.0,9426160.0,10239800.0,5554020.0,8787460.0,0,0,0,0,0,0]},{"l":"Natal","rg":"Centro Nordeste","c":"GSB","p":"BC","i":"2016-09-30","e":"PRÓPRIO","cl":"10154","ck":"P: 6 | G: 4 | S: 3 | T: 13","po":"4","pn":"104","rv":"31º","m2":["329","668","371","429","908","1299","1085","238","568","753","585","505","430","224","1243","274","245","4634","10154"],"sd":[17428800.0,7631960.0,31445500.0,9784830.0,23659500.0,13268000.0,14650500.0,5996190.0,11039000.0,6689120.0,6936910.0,5036820.0,11003400.0,0,0,0,0,0,0]},{"l":"Salvador","rg":"Centro Nordeste","c":"GSB","p":"BC","i":"2023-11-30","e":"ALUGADO","cl":"12054","ck":"P: 12 | G: 0 | S: 10 | T: 22","po":"4","pn":"97","rv":"25º","m2":["0","1011","578","435","876","1007","1475","265","562","630","547","515","552","417","2342","314","528","2254","12054"],"sd":[11284200.0,8640420.0,29812700.0,8765150.0,22934100.0,18089900.0,21191500.0,6017700.0,13925600.0,11897700.0,9067900.0,4259720.0,12393900.0,0,0,0,0,0,0]},{"l":"Anhanguera","rg":"Interior - SP","c":"GSB","p":"BC","i":"2011-03-29","e":"PRÓPRIO","cl":"10633","ck":"P: 8 | G: 4 | S: 6 | T: 18","po":"3","pn":"108","rv":"27º","m2":["333","642","576","308","670","1190","1056","251","495","877","662","449","418","231","1970","291","214","2986","10633"],"sd":[20605600.0,8841550.0,23082700.0,10832400.0,25872400.0,23931200.0,11834700.0,5069110.0,14425000.0,7244400.0,10154400.0,2976020.0,9530070.0,0,0,0,0,0,0]},{"l":"Bauru","rg":"Interior - SP","c":"COMPACTA","p":"BC","i":"2025-04-26","e":"ALUGADO","cl":"4366","ck":"P: 4 | G: 0 | S: 5 | T: 9","po":"4","pn":"84","rv":"47º","m2":["202","346","236","201","376","496","496","178","384","307","282","229","231","141","0","109","152","785","4366"],"sd":[2063710.0,1931640.0,4563220.0,2268060.0,5236630.0,4954760.0,3432050.0,1494770.0,3059960.0,2561140.0,2352940.0,873976.0,2349380.0,0,0,0,0,0,0]},{"l":"Campinas D. Pedro","rg":"Interior - SP","c":"GSB","p":"AB","i":"17/01/1999","e":"PRÓPRIO","cl":"13510","ck":"P: 10 | G: 1 | S: 12 | T: 23","po":"5","pn":"112","rv":"5º","m2":["299","871","539","378","713","1044","1873","332","533","874","695","384","637","534","3152","257","395","2388","13510"],"sd":[20609900.0,12131600.0,32575700.0,13176700.0,43709100.0,42812000.0,31081200.0,9369260.0,18935000.0,20000500.0,21442600.0,6361120.0,17979000.0,0,0,0,0,0,0]},{"l":"Jundiaí","rg":"Interior - SP","c":"GSB","p":"BC","i":"2024-10-25","e":"ALUGADO","cl":"8301","ck":"P: 8 | G: 0 | S: 6 | T: 14","po":"4","pn":"85","rv":"40º","m2":["0","618","486","224","578","835","987","232","500","684","448","322","386","210","1345","209","237","1247","8301"],"sd":[7234230.0,6527790.0,12301000.0,5541200.0,19223300.0,13848300.0,10022100.0,3983840.0,8649520.0,8365000.0,6862200.0,2333530.0,7122350.0,0,0,0,0,0,0]},{"l":"Ribeirão Preto","rg":"Interior - SP","c":"GSB","p":"BC","i":"1999-09-06","e":"ALUGADO","cl":"9804","ck":"P: 10 | G: 0 | S: 4 | T: 14","po":"3","pn":"82","rv":"32º","m2":["607","673","312","321","648","1047","792","188","418","788","521","301","401","257","2080","256","194","3001","9804"],"sd":[11048700.0,7224330.0,19560900.0,8715250.0,25555500.0,20381100.0,13439100.0,5680820.0,10965300.0,10125100.0,9915060.0,3361920.0,9774940.0,0,0,0,0,0,0]},{"l":"Santos","rg":"Interior - SP","c":"GSB","p":"BC","i":"2021-08-04","e":"ALUGADO","cl":"9462","ck":"P: 8 | G: 0 | S: 5 | T: 13","po":"3","pn":"97","rv":"29º","m2":["281","714","740","406","568","826","1247","236","501","749","534","404","505","394","872","214","271","782","9462"],"sd":[15927800.0,6980160.0,25390700.0,7939140.0,27460900.0,19495000.0,10415100.0,6204540.0,15795200.0,10238100.0,8659910.0,3532610.0,10070200.0,0,0,0,0,0,0]},{"l":"São Bernardo","rg":"Interior - SP","c":"GSB","p":"BC","i":"2015-10-22","e":"PRÓPRIO","cl":"10928","ck":"P: 9 | G: 1 | S: 10 | T: 20","po":"3","pn":"114","rv":"9º","m2":["518","805","589","380","1112","1050","1250","246","805","828","633","493","411","448","700","324","336","2488","10928"],"sd":[22026700.0,9672000.0,30058100.0,14562800.0,41101900.0,26130600.0,12748800.0,9087650.0,24743600.0,9492870.0,14183900.0,4635100.0,14396900.0,0,0,0,0,0,0]},{"l":"São Caetano","rg":"Interior - SP","c":"GSB","p":"BC","i":"2002-09-24","e":"PRÓPRIO","cl":"9141","ck":"P: 10 | G: 0 | S: 6 | T: 16","po":"3","pn":"104","rv":"24º","m2":["277","725","352","342","672","1068","1222","247","484","651","382","511","473","161","914","324","336","2582","9141"],"sd":[16041700.0,6718160.0,24632100.0,8242000.0,34122400.0,23783000.0,9882020.0,6051190.0,20349200.0,8303510.0,9345810.0,3092020.0,11234100.0,0,0,0,0,0,0]},{"l":"São José do Rio Preto","rg":"Interior - SP","c":"GSB","p":"BC","i":"2013-05-03","e":"PRÓPRIO","cl":"8868","ck":"P: 6 | G: 6 | S: 0 | T: 12","po":"2","pn":"81","rv":"37º","m2":["466","606","294","295","500","964","695","225","510","589","408","513","221","276","1726","251","329","3428","8868"],"sd":[13152800.0,3510790.0,13716300.0,9157710.0,18277400.0,19866600.0,12517300.0,4271310.0,9739760.0,6925080.0,6267960.0,2722700.0,8866180.0,0,0,0,0,0,0]},{"l":"São José dos Campos","rg":"Interior - SP","c":"GSB","p":"BC","i":"2006-11-30","e":"ALUGADO","cl":"10791","ck":"P: 0 | G: 12 | S: 6 | T: 18","po":"2","pn":"90","rv":"18º","m2":["477","817","400","355","780","1226","1088","248","550","736","606","536","410","241","1728","319","274","2121","10791"],"sd":[15447400.0,8601440.0,22736900.0,9994630.0,38528200.0,24796400.0,15504900.0,6246450.0,18425600.0,10063000.0,10540300.0,3797250.0,10723300.0,0,0,0,0,0,0]},{"l":"Sorocaba","rg":"Interior - SP","c":"GSB","p":"BC","i":"2012-05-02","e":"PRÓPRIO","cl":"9928","ck":"P: 11 | G: 0 | S: 6 | T: 17","po":"3","pn":"91","rv":"11º","m2":["0","556","317","313","595","1221","1286","250","522","807","481","324","344","244","2114","288","266","2102","9928"],"sd":[18836700.0,11281100.0,25552000.0,12750400.0,38614800.0,29038400.0,18808300.0,7699140.0,17726800.0,11615800.0,11428200.0,4675730.0,13503300.0,0,0,0,0,0,0]},{"l":"Taubaté","rg":"Interior - SP","c":"GSB","p":"BC","i":"2017-04-20","e":"ALUGADO","cl":"8702","ck":"P: 0 | G: 6 | S: 4 | T: 10","po":"4","pn":"72","rv":"44º","m2":["0","656","456","249","593","918","897","187","387","603","429","330","364","115","2093","212","213","1707","8702"],"sd":[8523460.0,4611420.0,11605800.0,5017510.0,14255900.0,10246500.0,7232640.0,2368780.0,6803540.0,4063050.0,4656720.0,1440770.0,4545290.0,0,0,0,0,0,0]},{"l":"Anália Franco","rg":"São Paulo","c":"GSB","p":"AB","i":"2016-12-07","e":"ALUGADO","cl":"9496","ck":"P: 12 | G: 0 | S: 6 | T: 18","po":"3","pn":"96","rv":"26º","m2":["0","721","360","284","726","1023","1045","305","432","771","679","433","495","320","1370","182","350","2334","9496"],"sd":[12943100.0,5932430.0,22729500.0,7547880.0,35846400.0,20805700.0,8754820.0,6607450.0,19674000.0,9566560.0,10706300.0,4148280.0,11581700.0,0,0,0,0,0,0]},{"l":"Express Alto da Boa Vista","rg":"São Paulo","c":"EXPRESS","p":"AB","i":"2024-05-20","e":"ALUGADO","cl":"473","ck":"P: 2 | G: 0 | S: 2 | T: 4","po":"1","pn":"17","rv":"53º","m2":["27","8","77","30","9","51","21","28","84","16","31","14","28","13","0","27","9","0","473"],"sd":[659534.0,107227.0,1768300.0,669637.0,403849.0,824593.0,297309.0,510060.0,1594060.0,190013.0,449500.0,128284.0,519339.0,0,0,0,0,0,0]},{"l":"Express Campo Belo","rg":"São Paulo","c":"EXPRESS","p":"AB","i":"2020-11-13","e":"ALUGADO","cl":"596","ck":"P: 2 | G: nan | S: 2 | T: 4","po":"1","pn":"19","rv":"48º","m2":["68","15","93","45","16","72","36","31","107","15","24","14","11","8","0","41","0","18","596"],"sd":[872106.0,191561.0,4274400.0,1650870.0,557032.0,2221110.0,600317.0,1405680.0,3259690.0,525416.0,1118720.0,476157.0,1332480.0,0,0,0,0,0,0]},{"l":"Express Pompéia","rg":"São Paulo","c":"EXPRESS","p":"AB","i":"2022-05-10","e":"ALUGADO","cl":"592","ck":"P: 2 | G: 0 | S: 2 | T: 4","po":"1","pn":"20","rv":"49º","m2":["53","5","86","46","26","63","20","39","118","17","31","20","20","9","0","39","0","0","592"],"sd":[917772.0,161303.0,3740670.0,1562420.0,571639.0,2183480.0,455039.0,1178770.0,3247680.0,311026.0,1058160.0,384134.0,1053530.0,0,0,0,0,0,0]},{"l":"Express Vila Nova Conceição","rg":"São Paulo","c":"EXPRESS","p":"AB","i":"2023-12-14","e":"ALUGADO","cl":"426","ck":"P: 2 | G: 0 | S: 2 | T: 4","po":"1","pn":"15","rv":"51º","m2":["30","4","81","31","5","48","16","28","69","9","29","13","21","7","0","24","11","0","426"],"sd":[592296.0,114515.0,2712000.0,1091140.0,561615.0,1549110.0,250066.0,798077.0,2074030.0,188616.0,704331.0,177843.0,790965.0,0,0,0,0,0,0]},{"l":"Guarulhos","rg":"São Paulo","c":"GSB","p":"BC","i":"2022-09-23","e":"ALUGADO","cl":"8188","ck":"P: 10 | G: 0 | S: 6 | T: 16","po":"4","pn":"94","rv":"33º","m2":["0","571","564","372","681","758","905","216","406","562","432","324","461","298","1168","223","247","511","8188"],"sd":[15604400.0,7235380.0,19015100.0,7774050.0,33525500.0,17816400.0,8100140.0,4798830.0,14567200.0,6542800.0,6803360.0,2311940.0,9033080.0,0,0,0,0,0,0]},{"l":"Interlagos","rg":"São Paulo","c":"GSB","p":"BC","i":"1998-01-07","e":"PRÓPRIO","cl":"13234","ck":"P: 8 | G: 1 | S: 12 | T: 21","po":"2","pn":"77","rv":"7º","m2":["479","1182","759","504","1154","1366","1389","313","688","888","618","476","687","299","1709","280","443","940","13234"],"sd":[30563000.0,11602300.0,32534800.0,16451800.0,50530100.0,26474400.0,11845900.0,7549430.0,32666200.0,8443910.0,11065200.0,4205520.0,14601400.0,0,0,0,0,0,0]},{"l":"Jaguaré","rg":"São Paulo","c":"GSB","p":"AB","i":"2015-10-21","e":"PRÓPRIO","cl":"11484","ck":"P: 3 | G: 6 | S: 6 | T: 15","po":"4","pn":"106","rv":"30º","m2":["555","806","348","382","1013","1474","983","245","534","948","659","545","416","233","1633","374","336","2088","11484"],"sd":[14776100.0,6120500.0,22076500.0,10773200.0,24631000.0,17613700.0,11091200.0,6620880.0,19979300.0,8449710.0,9896050.0,4764000.0,10310600.0,0,0,0,0,0,0]},{"l":"Lar Center","rg":"São Paulo","c":"GSB","p":"AB","i":"2010-12-15","e":"ALUGADO","cl":"9528","ck":"P: 0 | G: 10 | S: 6 | T: 16","po":"2","pn":"94","rv":"15º","m2":["0","741","321","313","620","1147","1034","194","548","911","493","776","372","186","1468","258","146","1531","9528"],"sd":[16647700.0,8046660.0,23745300.0,8736660.0,36360900.0,24639200.0,11854800.0,7648070.0,20225100.0,11856800.0,11635700.0,4983160.0,13859200.0,0,0,0,0,0,0]},{"l":"Marginal Tietê 2","rg":"São Paulo","c":"GSB","p":"BC","i":"2018-10-23","e":"PRÓPRIO","cl":"18002","ck":"P: 12 | G: 0 | S: 12 | T: 24","po":"3","pn":"126","rv":"2º","m2":["500","1042","802","593","1320","1649","2188","402","707","1254","981","849","668","254","3735","451","607","3262","18002"],"sd":[43841600.0,17878700.0,46178600.0,20911300.0,86567300.0,48963100.0,26857900.0,15714400.0,44210000.0,23397000.0,20712900.0,10177700.0,25977900.0,0,0,0,0,0,0]},{"l":"Morumbi","rg":"São Paulo","c":"GSB","p":"AB","i":"2004-04-07","e":"PRÓPRIO","cl":"12227","ck":"P: 11 | G: 0 | S: 12 | T: 23","po":"1","pn":"103","rv":"1º","m2":["608","879","389","406","1092","1143","1851","303","570","572","606","433","632","275","1848","273","347","1244","12227"],"sd":[42060500.0,17257400.0,60723000.0,24002500.0,78376500.0,54687700.0,34993700.0,18321300.0,51626900.0,29230400.0,27203400.0,14117800.0,28831000.0,0,0,0,0,0,0]},{"l":"Raposo Tavares","rg":"São Paulo","c":"GSB","p":"BC","i":"2001-02-07","e":"PRÓPRIO","cl":"12970","ck":"P: 10 | G: 2 | S: 12 | T: 24","po":"3","pn":"83","rv":"4º","m2":["457","1033","669","410","694","1499","1457","432","560","1236","673","688","508","400","1728","335","191","371","12970"],"sd":[38215200.0,13518000.0,47138600.0,20670600.0,54455300.0,36026000.0,18875000.0,9944400.0,44633000.0,14105400.0,16924600.0,5257090.0,18048200.0,0,0,0,0,0,0]},{"l":"Ricardo Jafet","rg":"São Paulo","c":"GSB","p":"AB","i":"2007-05-22","e":"ALUGADO","cl":"9090","ck":"P: 14 | G: 0 | S: 5 | T: 19","po":"2","pn":"97","rv":"6º","m2":["196","451","346","318","676","1696","1104","308","470","597","580","381","134","246","1162","273","152","1164","9090"],"sd":[20141900.0,9936550.0,37176400.0,12031900.0,42558100.0,35872100.0,17860500.0,11546000.0,30577700.0,16792400.0,16942900.0,8463720.0,18728500.0,0,0,0,0,0,0]},{"l":"Tamboré","rg":"São Paulo","c":"GSB","p":"AB","i":"2015-12-08","e":"ALUGADO","cl":"10509","ck":"P: 9 | G: 0 | S: 6 | T: 15","po":"3","pn":"89","rv":"13º","m2":["0","717","394","350","853","1260","1469","267","633","801","551","524","425","253","1387","302","323","3103","10509"],"sd":[20836100.0,9740540.0,25153500.0,12367800.0,36935000.0,19194600.0,14244700.0,7161880.0,25253200.0,11377800.0,10225900.0,4347880.0,9670280.0,0,0,0,0,0,0]},{"l":"Contagem","rg":"Sudeste","c":"GSB","p":"BC","i":"2000-05-17","e":"PRÓPRIO","cl":"11230","ck":"P: 10 | G: 0 | S: 6 | T: 16","po":"3","pn":"104","rv":"12º","m2":["0","849","422","359","725","1169","1589","270","500","880","607","377","466","197","2271","239","310","0","11230"],"sd":[20776800.0,8388050.0,24301800.0,13013100.0,38653800.0,29443400.0,21330700.0,6371670.0,19789100.0,11455500.0,9872900.0,4467770.0,13487100.0,0,0,0,0,0,0]},{"l":"Bh Norte","rg":"Sudeste","c":"GSB","p":"BC","i":"2013-04-02","e":"ALUGADO","cl":"10957","ck":"P: 4 | G: 8 | S: 6 | T: 18","po":"3","pn":"96","rv":"21º","m2":["685","838","387","385","742","1130","1330","295","598","907","637","616","513","72","1189","329","304","3137","10957"],"sd":[15379000.0,6242320.0,20927500.0,10603900.0,27087400.0,26402600.0,20466700.0,5996430.0,15557000.0,11412700.0,10790900.0,4763810.0,12041200.0,0,0,0,0,0,0]},{"l":"Bh Sul","rg":"Sudeste","c":"GSB","p":"AB","i":"2009-05-06","e":"PRÓPRIO","cl":"8244","ck":"P: 2 | G: 8 | S: 6 | T: 16","po":"2","pn":"98","rv":"22º","m2":["297","620","251","241","598","978","1413","237","460","779","494","344","422","95","500","256","259","0","8244"],"sd":[12188600.0,5709690.0,15917300.0,7499590.0,26376800.0,25786100.0,23013300.0,7061950.0,13536100.0,16960300.0,9758660.0,6800140.0,12966100.0,0,0,0,0,0,0]},{"l":"Express bh São Pedro","rg":"Sudeste","c":"EXPRESS","p":"AB","i":"2023-10-01","e":"ALUGADO","cl":"808","ck":"P: 2 | G: 0 | S: 2 | T: 4","po":"1","pn":"25","rv":"52º","m2":["67","10","116","54","10","72","47","62","122","29","77","25","42","21","0","33","21","9","808"],"sd":[515736.0,71382.0,1458000.0,794194.0,385241.0,1825660.0,1159170.0,940846.0,1595070.0,580940.0,479827.0,377704.0,932488.0,0,0,0,0,0,0]},{"l":"Express Leblon","rg":"Sudeste","c":"EXPRESS","p":"AB","i":"2024-05-07","e":"ALUGADO","cl":"592","ck":"P: 2 | G: 0 | S: 2 | T: 4","po":"0","pn":"16","rv":"50º","m2":["23","10","91","27","22","78","27","28","99","31","46","16","39","0","0","39","16","0","592"],"sd":[524058.0,249771.0,3258550.0,666221.0,835688.0,1850720.0,520838.0,890309.0,2296600.0,586200.0,968939.0,341754.0,817198.0,0,0,0,0,0,0]},{"l":"Niteroi","rg":"Sudeste","c":"GSB","p":"BC","i":"2009-10-28","e":"PRÓPRIO","cl":"6981","ck":"P: 10 | G: 2 | S: 6 | T: 18","po":"2","pn":"87","rv":"16º","m2":["350","647","240","233","473","1098","760","175","537","752","384","265","476","70","0","278","243","0","6981"],"sd":[16549200.0,8194050.0,29136800.0,10194000.0,33105000.0,23570000.0,16958600.0,5462500.0,18853000.0,11222500.0,11740500.0,4418040.0,9410350.0,0,0,0,0,0,0]},{"l":"Rio Barra","rg":"Sudeste","c":"GSB","p":"AB","i":"2003-03-18","e":"PRÓPRIO","cl":"9704","ck":"P: 10 | G: 0 | S: 10 | T: 20","po":"3","pn":"98","rv":"3º","m2":["197","755","450","402","611","1193","1605","264","528","943","546","413","454","93","721","312","217","2881","9704"],"sd":[19381300.0,14516000.0,55727200.0,13908600.0,55859700.0,39433700.0,32106900.0,14435600.0,34413400.0,27557200.0,24520600.0,10015500.0,18468200.0,0,0,0,0,0,0]},{"l":"Rio Norte","rg":"Sudeste","c":"GSB","p":"BC","i":"2001-08-22","e":"PRÓPRIO","cl":"10413","ck":"P: 14 | G: 0 | S: 6 | T: 20","po":"3","pn":"100","rv":"10º","m2":["471","827","427","342","630","1314","1408","348","668","656","756","428","437","108","1053","313","227","3699","10413"],"sd":[20964500.0,9493290.0,36527900.0,10973900.0,37221700.0,25431500.0,18174500.0,6739540.0,27623800.0,9300440.0,12730300.0,4091330.0,10773300.0,0,0,0,0,0,0]},{"l":"Uberlândia","rg":"Sudeste","c":"GSB","p":"BC","i":"2011-12-08","e":"ALUGADO","cl":"7624","ck":"P: 9 | G: 1 | S: 3 | T: 13","po":"4","pn":"74","rv":"43º","m2":["0","566","384","264","590","958","930","206","327","470","365","212","129","160","1630","213","220","3073","7624"],"sd":[6357100.0,4231510.0,12490900.0,8015200.0,8760980.0,11602200.0,10870100.0,3393200.0,5762450.0,4877510.0,4478820.0,2449060.0,6113420.0,0,0,0,0,0,0]},{"l":"Vitória","rg":"Sudeste","c":"GSB","p":"BC","i":"2019-12-13","e":"ALUGADO","cl":"8808","ck":"P: 8 | G: 0 | S: 6 | T: 14","po":"3","pn":"86","rv":"28º","m2":["0","1347","296","274","583","1185","880","249","469","588","487","323","385","133","1180","177","252","1000","8808"],"sd":[9556950.0,7159850.0,25003700.0,9922460.0,18416500.0,22067600.0,18770600.0,7248630.0,11644300.0,12391900.0,9574650.0,6688000.0,14847900.0,0,0,0,0,0,0]},{"l":"Curitiba","rg":"Sul","c":"GSB","p":"BC","i":"2002-05-28","e":"PRÓPRIO","cl":"10191","ck":"P: 14 | G: 0 | S: 6 | T: 20","po":"3","pn":"101","rv":"23º","m2":["535","589","348","304","779","1315","1189","300","541","787","530","586","486","99","1261","302","240","0","10191"],"sd":[10922100.0,7717630.0,22527700.0,10631500.0,23154400.0,23172700.0,20018100.0,7304450.0,14535000.0,13471400.0,11068200.0,5346010.0,12492200.0,0,0,0,0,0,0]},{"l":"Curitiba Atuba","rg":"Sul","c":"GSB","p":"BC","i":"2012-12-11","e":"PRÓPRIO","cl":"9670","ck":"P: 8 | G: 0 | S: 4 | T: 12","po":"3","pn":"99","rv":"41º","m2":["349","539","345","340","751","1058","866","272","572","760","535","346","456","220","1727","267","267","2139","9670"],"sd":[8110940.0,4337840.0,14016100.0,8477230.0,15469400.0,13705100.0,12539400.0,3969430.0,9008420.0,6572410.0,5960590.0,2764420.0,7033180.0,0,0,0,0,0,0]},{"l":"Joinville","rg":"Sul","c":"GSB","p":"BC","i":"2024-08-03","e":"ALUGADO","cl":"9393","ck":"P: 8 | G: 0 | S: 8 | T: 16","po":"4","pn":"89","rv":"45º","m2":["72","598","466","357","782","1008","1600","249","414","634","461","299","357","131","1570","338","57","0","9393"],"sd":[4101860.0,2589390.0,11420900.0,3564590.0,6936720.0,7511290.0,7535650.0,2004930.0,3138140.0,3896670.0,3268090.0,1604090.0,5894190.0,0,0,0,0,0,0]},{"l":"Londrina","rg":"Sul","c":"GSB","p":"BC","i":"2012-10-17","e":"PRÓPRIO","cl":"9894","ck":"P: 0 | G: 10 | S: 3 | T: 13","po":"3","pn":"102","rv":"42º","m2":["474","653","603","297","868","1077","969","228","568","937","484","565","219","185","1145","260","362","3288","9894"],"sd":[8007030.0,4430570.0,12255200.0,8106260.0,13812000.0,15416700.0,11916600.0,4097380.0,7338060.0,5988700.0,6135680.0,2769100.0,7338150.0,0,0,0,0,0,0]},{"l":"Poa Estaleiro","rg":"Sul","c":"GSB","p":"AB","i":"2022-05-26","e":"PRÓPRIO","cl":"9004","ck":"P: 10 | G: 0 | S: 6 | T: 16","po":"4","pn":"100","rv":"38º","m2":["266","885","616","445","679","934","1003","257","491","821","454","418","494","292","301","302","346","324","9004"],"sd":[8391560.0,7216040.0,15876200.0,6430830.0,16654800.0,14086600.0,11507900.0,4152240.0,11491600.0,9686440.0,9351010.0,3410320.0,7679320.0,0,0,0,0,0,0]},{"l":"Porto Alegre","rg":"Sul","c":"GSB","p":"BC","i":"2009-04-23","e":"PRÓPRIO","cl":"8766","ck":"P: 8 | G: 6 | S: 6 | T: 20","po":"2","pn":"90","rv":"14º","m2":["170","602","335","336","655","1148","1071","203","653","894","538","381","403","115","840","302","120","0","8766"],"sd":[14300900.0,14307700.0,27358000.0,13418500.0,29192500.0,22241900.0,14769800.0,6610760.0,20368000.0,12062400.0,11982900.0,4635350.0,11873000.0,0,0,0,0,0,0]},{"l":"São José","rg":"Sul","c":"GSB","p":"BC","i":"2014-06-11","e":"PRÓPRIO","cl":"10196","ck":"P: 8 | G: 1 | S: 6 | T: 15","po":"3","pn":"102","rv":"35º","m2":["574","846","605","309","861","961","978","208","624","1066","593","591","96","111","1206","300","267","2979","10196"],"sd":[9262150.0,7502330.0,20787500.0,6839500.0,13478000.0,15153200.0,17081300.0,4831690.0,8861590.0,10444100.0,7326100.0,4678160.0,11070500.0,0,0,0,0,0,0]},{"l":"São Leopoldo","rg":"Sul","c":"GSB","p":"BC","i":"2012-10-08","e":"PRÓPRIO","cl":"8202","ck":"P: 4 | G: 5 | S: 3 | T: 12","po":"3","pn":"91","rv":"34º","m2":["265","651","545","370","845","878","1099","276","551","858","462","324","393","251","0","223","211","2111","8202"],"sd":[12844600.0,8009780.0,17459100.0,8651570.0,23063800.0,17010400.0,14042200.0,3739890.0,9636560.0,8895000.0,7960290.0,2999980.0,8815730.0,0,0,0,0,0,0]}];
+        // Plugin customizado para desenhar a quantidade exata no topo de cada coluna
+        const topValuePlugin = {
+            id: 'topValuePlugin',
+            afterDatasetsDraw(chart, args, pluginOptions) {
+                if (!pluginOptions || pluginOptions.enabled === false) return;
+                const { ctx } = chart;
+                chart.data.datasets.forEach((dataset, i) => {
+                    const meta = chart.getDatasetMeta(i);
+                    if (meta.type !== 'bar' || meta.hidden) return;
+                    meta.data.forEach((bar, index) => {
+                        const val = dataset.data[index];
+                        if (val !== undefined && val !== null) {
+                            ctx.save();
+                            ctx.fillStyle = (val === 0) ? '#a0aec0' : '#1a202c';
+                            ctx.font = 'bold 12px "Segoe UI", system-ui, sans-serif';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            ctx.fillText(val, bar.x, bar.y - 5);
+                            ctx.restore();
+                        }
+                    });
+                });
+            }
+        };
+        Chart.register(topValuePlugin);
+
+        const rawData = [
+            {"l":"Brasília Norte","rg":"Centro Nordeste","c":"GSB","p":"AB","i":"2011-12-09","e":"PRÓPRIO","cl":"8840","ck":"P: 9 | G: 2 | S: 6 | T: 17","po":"3","pn":"108","rv":"36º","m2":["485","752","504","363","651","995","1324","278","473","851","588","397","451","172","0","212","344","4032","8840"],"sd":[8724390.0,5504740.0,19273600.0,9165240.0,9212950.0,14429200.0,15895400.0,6127010.0,10336500.0,10166600.0,7027400.0,5969570.0,11190700.0,0,0,0,0,0,0]},
+            {"l":"Brasília Sul","rg":"Centro Nordeste","c":"GSB","p":"AB","i":"2005-10-26","e":"PRÓPRIO","cl":"12051","ck":"P: 0 | G: 10 | S: 6 | T: 16","po":"4","pn":"93","rv":"17º","m2":["631","1055","703","387","805","987","1322","290","607","1192","727","898","253","96","1509","295","294","1896","12051"],"sd":[11614600.0,9801970.0,25877300.0,11737700.0,14560600.0,21777900.0,22856900.0,8387780.0,14252200.0,17922500.0,10166200.0,9284160.0,17619800.0,0,0,0,0,0,0]},
+            {"l":"Campo Grande","rg":"Centro Nordeste","c":"GSB","p":"BC","i":"2015-10-20","e":"PRÓPRIO","cl":"7972","ck":"P: 4 | G: 4 | S: 4 | T: 12","po":"3","pn":"98","rv":"39º","m2":["207","692","538","436","913","805","1148","206","431","780","514","373","336","245","0","193","155","4826","7972"],"sd":[8462730.0,5213930.0,21594800.0,7353610.0,18998300.0,11979700.0,12838900.0,3770900.0,6359580.0,7757430.0,5908400.0,3163080.0,7984240.0,0,0,0,0,0,0]},
+            {"l":"Fortaleza","rg":"Centro Nordeste","c":"GSB","p":"AB","i":"2015-04-15","e":"ALUGADO","cl":"9782","ck":"P: 8 | G: 4 | S: 11 | T: 23","po":"2","pn":"112","rv":"8º","m2":["486","730","387","318","879","1274","1022","240","648","873","568","493","358","105","680","358","363","4445","9782"],"sd":[15204000.0,13117200.0,38310400.0,16274000.0,19468000.0,23983300.0,22660300.0,11905200.0,18070100.0,20922000.0,13629300.0,10472900.0,16924600.0,0,0,0,0,0,0]},
+            {"l":"Goiania","rg":"Centro Nordeste","c":"GSB","p":"BC","i":"2008-10-30","e":"ALUGADO","cl":"8118","ck":"P: 7 | G: 0 | S: 6 | T: 13","po":"4","pn":"69","rv":"19º","m2":["236","673","268","246","468","908","1089","197","444","742","419","317","222","137","1337","263","152","0","8118"],"sd":[12326500.0,6493000.0,29213500.0,11515000.0,19559800.0,30298900.0,19523600.0,6410390.0,10778200.0,12057400.0,9465230.0,4897370.0,18066500.0,0,0,0,0,0,0]},
+            {"l":"Jardim Botânico Df","rg":"Centro Nordeste","c":"GSB","p":"AB","i":"2025-02-07","e":"ALUGADO","cl":"5420","ck":"P: 6 | G: 0 | S: 6 | T: 12","po":"4","pn":"70","rv":"46º","m2":["100","427","324","196","570","661","695","197","309","399","302","335","338","305","0","185","77","179","5420"],"sd":[2891470.0,2307230.0,8174550.0,4006990.0,4854420.0,5956430.0,10018300.0,2560580.0,4947100.0,4696340.0,3440730.0,2636570.0,4497570.0,0,0,0,0,0,0]},
+            {"l":"Maceio","rg":"Centro Nordeste","c":"GSB","p":"BC","i":"2016-05-18","e":"ALUGADO","cl":"9934","ck":"P: 11 | G: 0 | S: 3 | T: 14","po":"3","pn":"111","rv":"20º","m2":["216","613","409","329","969","1187","1281","257","509","724","527","592","427","228","1118","266","282","3995","9934"],"sd":[24900900.0,7667520.0,27636800.0,12117200.0,22166700.0,19214300.0,18769600.0,7581980.0,13921000.0,9426160.0,10239800.0,5554020.0,8787460.0,0,0,0,0,0,0]},
+            {"l":"Natal","rg":"Centro Nordeste","c":"GSB","p":"BC","i":"2016-09-30","e":"PRÓPRIO","cl":"10154","ck":"P: 6 | G: 4 | S: 3 | T: 13","po":"4","pn":"104","rv":"31º","m2":["329","668","371","429","908","1299","1085","238","568","753","585","505","430","224","1243","274","245","4634","10154"],"sd":[17428800.0,7631960.0,31445500.0,9784830.0,23659500.0,13268000.0,14650500.0,5996190.0,11039000.0,6689120.0,6936910.0,5036820.0,11003400.0,0,0,0,0,0,0]},
+            {"l":"Salvador","rg":"Centro Nordeste","c":"GSB","p":"BC","i":"2023-11-30","e":"ALUGADO","cl":"12054","ck":"P: 12 | G: 0 | S: 10 | T: 22","po":"4","pn":"97","rv":"25º","m2":["0","1011","578","435","876","1007","1475","265","562","630","547","515","552","417","2342","314","528","2254","12054"],"sd":[11284200.0,8640420.0,29812700.0,8765150.0,22934100.0,18089900.0,21191500.0,6017700.0,13925600.0,11897700.0,9067900.0,4259720.0,12393900.0,0,0,0,0,0,0]},
+            {"l":"Anhanguera","rg":"Interior - SP","c":"GSB","p":"BC","i":"2011-03-29","e":"PRÓPRIO","cl":"10633","ck":"P: 8 | G: 4 | S: 6 | T: 18","po":"3","pn":"108","rv":"27º","m2":["333","642","576","308","670","1190","1056","251","495","877","662","449","418","231","1970","291","214","2986","10633"],"sd":[20605600.0,8841550.0,23082700.0,10832400.0,25872400.0,23931200.0,11834700.0,5069110.0,14425000.0,7244400.0,10154400.0,2976020.0,9530070.0,0,0,0,0,0,0]},
+            {"l":"Bauru","rg":"Interior - SP","c":"COMPACTA","p":"BC","i":"2025-04-26","e":"ALUGADO","cl":"4366","ck":"P: 4 | G: 0 | S: 5 | T: 9","po":"4","pn":"84","rv":"47º","m2":["202","346","236","201","376","496","496","178","384","307","282","229","231","141","0","109","152","785","4366"],"sd":[2063710.0,1931640.0,4563220.0,2268060.0,5236630.0,4954760.0,3432050.0,1494770.0,3059960.0,2561140.0,2352940.0,873976.0,2349380.0,0,0,0,0,0,0]},
+            {"l":"Campinas D. Pedro","rg":"Interior - SP","c":"GSB","p":"AB","i":"17/01/1999","e":"PRÓPRIO","cl":"13510","ck":"P: 10 | G: 1 | S: 12 | T: 23","po":"5","pn":"112","rv":"5º","m2":["299","871","539","378","713","1044","1873","332","533","874","695","384","637","534","3152","257","395","2388","13510"],"sd":[20609900.0,12131600.0,32575700.0,13176700.0,43709100.0,42812000.0,31081200.0,9369260.0,18935000.0,20000500.0,21442600.0,6361120.0,17979000.0,0,0,0,0,0,0]},
+            {"l":"Jundiaí","rg":"Interior - SP","c":"GSB","p":"BC","i":"2024-10-25","e":"ALUGADO","cl":"8301","ck":"P: 8 | G: 0 | S: 6 | T: 14","po":"4","pn":"85","rv":"40º","m2":["0","618","486","224","578","835","987","232","500","684","448","322","386","210","1345","209","237","1247","8301"],"sd":[7234230.0,6527790.0,12301000.0,5541200.0,19223300.0,13848300.0,10022100.0,3983840.0,8649520.0,8365000.0,6862200.0,2333530.0,7122350.0,0,0,0,0,0,0]},
+            {"l":"Ribeirão Preto","rg":"Interior - SP","c":"GSB","p":"BC","i":"1999-09-06","e":"ALUGADO","cl":"9804","ck":"P: 10 | G: 0 | S: 4 | T: 14","po":"3","pn":"82","rv":"32º","m2":["607","673","312","321","648","1047","792","188","418","788","521","301","401","257","2080","256","194","3001","9804"],"sd":[11048700.0,7224330.0,19560900.0,8715250.0,25555500.0,20381100.0,13439100.0,5680820.0,10965300.0,10125100.0,9915060.0,3361920.0,9774940.0,0,0,0,0,0,0]},
+            {"l":"Santos","rg":"Interior - SP","c":"GSB","p":"BC","i":"2021-08-04","e":"ALUGADO","cl":"9462","ck":"P: 8 | G: 0 | S: 5 | T: 13","po":"3","pn":"97","rv":"29º","m2":["281","714","740","406","568","826","1247","236","501","749","534","404","505","394","872","214","271","782","9462"],"sd":[15927800.0,6980160.0,25390700.0,7939140.0,27460900.0,19495000.0,10415100.0,6204540.0,15795200.0,10238100.0,8659910.0,3532610.0,10070200.0,0,0,0,0,0,0]},
+            {"l":"São Bernardo","rg":"Interior - SP","c":"GSB","p":"BC","i":"2015-10-22","e":"PRÓPRIO","cl":"10928","ck":"P: 9 | G: 1 | S: 10 | T: 20","po":"3","pn":"114","rv":"9º","m2":["518","805","589","380","1112","1050","1250","246","805","828","633","493","411","448","700","324","336","2488","10928"],"sd":[22026700.0,9672000.0,30058100.0,14562800.0,41101900.0,26130600.0,12748800.0,9087650.0,24743600.0,9492870.0,14183900.0,4635100.0,14396900.0,0,0,0,0,0,0]},
+            {"l":"São Caetano","rg":"Interior - SP","c":"GSB","p":"BC","i":"2002-09-24","e":"PRÓPRIO","cl":"9141","ck":"P: 10 | G: 0 | S: 6 | T: 16","po":"3","pn":"104","rv":"24º","m2":["277","725","352","342","672","1068","1222","247","484","651","382","511","473","161","914","324","336","2582","9141"],"sd":[16041700.0,6718160.0,24632100.0,8242000.0,34122400.0,23783000.0,9882020.0,6051190.0,20349200.0,8303510.0,9345810.0,3092020.0,11234100.0,0,0,0,0,0,0]},
+            {"l":"São José do Rio Preto","rg":"Interior - SP","c":"GSB","p":"BC","i":"2013-05-03","e":"PRÓPRIO","cl":"8868","ck":"P: 6 | G: 6 | S: 0 | T: 12","po":"2","pn":"81","rv":"37º","m2":["466","606","294","295","500","964","695","225","510","589","408","513","221","276","1726","251","329","3428","8868"],"sd":[13152800.0,3510790.0,13716300.0,9157710.0,18277400.0,19866600.0,12517300.0,4271310.0,9739760.0,6925080.0,6267960.0,2722700.0,8866180.0,0,0,0,0,0,0]},
+            {"l":"São José dos Campos","rg":"Interior - SP","c":"GSB","p":"BC","i":"2006-11-30","e":"ALUGADO","cl":"10791","ck":"P: 0 | G: 12 | S: 6 | T: 18","po":"2","pn":"90","rv":"18º","m2":["477","817","400","355","780","1226","1088","248","550","736","606","536","410","241","1728","319","274","2121","10791"],"sd":[15447400.0,8601440.0,22736900.0,9994630.0,38528200.0,24796400.0,15504900.0,6246450.0,18425600.0,10063000.0,10540300.0,3797250.0,10723300.0,0,0,0,0,0,0]},
+            {"l":"Sorocaba","rg":"Interior - SP","c":"GSB","p":"BC","i":"2012-05-02","e":"PRÓPRIO","cl":"9928","ck":"P: 11 | G: 0 | S: 6 | T: 17","po":"3","pn":"91","rv":"11º","m2":["0","556","317","313","595","1221","1286","250","522","807","481","324","344","244","2114","288","266","2102","9928"],"sd":[18836700.0,11281100.0,25552000.0,12750400.0,38614800.0,29038400.0,18808300.0,7699140.0,17726800.0,11615800.0,11428200.0,4675730.0,13503300.0,0,0,0,0,0,0]},
+            {"l":"Taubaté","rg":"Interior - SP","c":"GSB","p":"BC","i":"2017-04-20","e":"ALUGADO","cl":"8702","ck":"P: 0 | G: 6 | S: 4 | T: 10","po":"4","pn":"72","rv":"44º","m2":["0","656","456","249","593","918","897","187","387","603","429","330","364","115","2093","212","213","1707","8702"],"sd":[8523460.0,4611420.0,11605800.0,5017510.0,14255900.0,10246500.0,7232640.0,2368780.0,6803540.0,4063050.0,4656720.0,1440770.0,4545290.0,0,0,0,0,0,0]},
+            {"l":"Anália Franco","rg":"São Paulo","c":"GSB","p":"AB","i":"2016-12-07","e":"ALUGADO","cl":"9496","ck":"P: 12 | G: 0 | S: 6 | T: 18","po":"3","pn":"96","rv":"26º","m2":["0","721","360","284","726","1023","1045","305","432","771","679","433","495","320","1370","182","350","2334","9496"],"sd":[12943100.0,5932430.0,22729500.0,7547880.0,35846400.0,20805700.0,8754820.0,6607450.0,19674000.0,9566560.0,10706300.0,4148280.0,11581700.0,0,0,0,0,0,0]},
+            {"l":"Express Alto da Boa Vista","rg":"São Paulo","c":"EXPRESS","p":"AB","i":"2024-05-20","e":"ALUGADO","cl":"473","ck":"P: 2 | G: 0 | S: 2 | T: 4","po":"1","pn":"17","rv":"53º","m2":["27","8","77","30","9","51","21","28","84","16","31","14","28","13","0","27","9","0","473"],"sd":[659534.0,107227.0,1768300.0,669637.0,403849.0,824593.0,297309.0,510060.0,1594060.0,190013.0,449500.0,128284.0,519339.0,0,0,0,0,0,0]},
+            {"l":"Express Campo Belo","rg":"São Paulo","c":"EXPRESS","p":"AB","i":"2020-11-13","e":"ALUGADO","cl":"596","ck":"P: 2 | G: nan | S: 2 | T: 4","po":"1","pn":"19","rv":"48º","m2":["68","15","93","45","16","72","36","31","107","15","24","14","11","8","0","41","0","18","596"],"sd":[872106.0,191561.0,4274400.0,1650870.0,557032.0,2221110.0,600317.0,1405680.0,3259690.0,525416.0,1118720.0,476157.0,1332480.0,0,0,0,0,0,0]},
+            {"l":"Express Pompéia","rg":"São Paulo","c":"EXPRESS","p":"AB","i":"2022-05-10","e":"ALUGADO","cl":"592","ck":"P: 2 | G: 0 | S: 2 | T: 4","po":"1","pn":"20","rv":"49º","m2":["53","5","86","46","26","63","20","39","118","17","31","20","20","9","0","39","0","0","592"],"sd":[917772.0,161303.0,3740670.0,1562420.0,571639.0,2183480.0,455039.0,1178770.0,3247680.0,311026.0,1058160.0,384134.0,1053530.0,0,0,0,0,0,0]},
+            {"l":"Express Vila Nova Conceição","rg":"São Paulo","c":"EXPRESS","p":"AB","i":"2023-12-14","e":"ALUGADO","cl":"426","ck":"P: 2 | G: 0 | S: 2 | T: 4","po":"1","pn":"15","rv":"51º","m2":["30","4","81","31","5","48","16","28","69","9","29","13","21","7","0","24","11","0","426"],"sd":[592296.0,114515.0,2712000.0,1091140.0,561615.0,1549110.0,250066.0,798077.0,2074030.0,188616.0,704331.0,177843.0,790965.0,0,0,0,0,0,0]},
+            {"l":"Guarulhos","rg":"São Paulo","c":"GSB","p":"BC","i":"2022-09-23","e":"ALUGADO","cl":"8188","ck":"P: 10 | G: 0 | S: 6 | T: 16","po":"4","pn":"94","rv":"33º","m2":["0","571","564","372","681","758","905","216","406","562","432","324","461","298","1168","223","247","511","8188"],"sd":[15604400.0,7235380.0,19015100.0,7774050.0,33525500.0,17816400.0,8100140.0,4798830.0,14567200.0,6542800.0,6803360.0,2311940.0,9033080.0,0,0,0,0,0,0]},
+            {"l":"Interlagos","rg":"São Paulo","c":"GSB","p":"BC","i":"1998-01-07","e":"PRÓPRIO","cl":"13234","ck":"P: 8 | G: 1 | S: 12 | T: 21","po":"2","pn":"77","rv":"7º","m2":["479","1182","759","504","1154","1366","1389","313","688","888","618","476","687","299","1709","280","443","940","13234"],"sd":[30563000.0,11602300.0,32534800.0,16451800.0,50530100.0,26474400.0,11845900.0,7549430.0,32666200.0,8443910.0,11065200.0,4205520.0,14601400.0,0,0,0,0,0,0]},
+            {"l":"Jaguaré","rg":"São Paulo","c":"GSB","p":"AB","i":"2015-10-21","e":"PRÓPRIO","cl":"11484","ck":"P: 3 | G: 6 | S: 6 | T: 15","po":"4","pn":"106","rv":"30º","m2":["555","806","348","382","1013","1474","983","245","534","948","659","545","416","233","1633","374","336","2088","11484"],"sd":[14776100.0,6120500.0,22076500.0,10773200.0,24631000.0,17613700.0,11091200.0,6620880.0,19979300.0,8449710.0,9896050.0,4764000.0,10310600.0,0,0,0,0,0,0]},
+            {"l":"Lar Center","rg":"São Paulo","c":"GSB","p":"AB","i":"2010-12-15","e":"ALUGADO","cl":"9528","ck":"P: 0 | G: 10 | S: 6 | T: 16","po":"2","pn":"94","rv":"15º","m2":["0","741","321","313","620","1147","1034","194","548","911","493","776","372","186","1468","258","146","1531","9528"],"sd":[16647700.0,8046660.0,23745300.0,8736660.0,36360900.0,24639200.0,11854800.0,7648070.0,20225100.0,11856800.0,11635700.0,4983160.0,13859200.0,0,0,0,0,0,0]},
+            {"l":"Marginal Tietê 2","rg":"São Paulo","c":"GSB","p":"BC","i":"2018-10-23","e":"PRÓPRIO","cl":"18002","ck":"P: 12 | G: 0 | S: 12 | T: 24","po":"3","pn":"126","rv":"2º","m2":["500","1042","802","593","1320","1649","2188","402","707","1254","981","849","668","254","3735","451","607","3262","18002"],"sd":[43841600.0,17878700.0,46178600.0,20911300.0,86567300.0,48963100.0,26857900.0,15714400.0,44210000.0,23397000.0,20712900.0,10177700.0,25977900.0,0,0,0,0,0,0]},
+            {"l":"Morumbi","rg":"São Paulo","c":"GSB","p":"AB","i":"2004-04-07","e":"PRÓPRIO","cl":"12227","ck":"P: 11 | G: 0 | S: 12 | T: 23","po":"1","pn":"103","rv":"1º","m2":["608","879","389","406","1092","1143","1851","303","570","572","606","433","632","275","1848","273","347","1244","12227"],"sd":[42060500.0,17257400.0,60723000.0,24002500.0,78376500.0,54687700.0,34993700.0,18321300.0,51626900.0,29230400.0,27203400.0,14117800.0,28831000.0,0,0,0,0,0,0]},
+            {"l":"Raposo Tavares","rg":"São Paulo","c":"GSB","p":"BC","i":"2001-02-07","e":"PRÓPRIO","cl":"12970","ck":"P: 10 | G: 2 | S: 12 | T: 24","po":"3","pn":"83","rv":"4º","m2":["457","1033","669","410","694","1499","1457","432","560","1236","673","688","508","400","1728","335","191","371","12970"],"sd":[38215200.0,13518000.0,47138600.0,20670600.0,54455300.0,36026000.0,18875000.0,9944400.0,44633000.0,14105400.0,16924600.0,5257090.0,18048200.0,0,0,0,0,0,0]},
+            {"l":"Ricardo Jafet","rg":"São Paulo","c":"GSB","p":"AB","i":"2007-05-22","e":"ALUGADO","cl":"9090","ck":"P: 14 | G: 0 | S: 5 | T: 19","po":"2","pn":"97","rv":"6º","m2":["196","451","346","318","676","1696","1104","308","470","597","580","381","134","246","1162","273","152","1164","9090"],"sd":[20141900.0,9936550.0,37176400.0,12031900.0,42558100.0,35872100.0,17860500.0,11546000.0,30577700.0,16792400.0,16942900.0,8463720.0,18728500.0,0,0,0,0,0,0]},
+            {"l":"Tamboré","rg":"São Paulo","c":"GSB","p":"AB","i":"2015-12-08","e":"ALUGADO","cl":"10509","ck":"P: 9 | G: 0 | S: 6 | T: 15","po":"3","pn":"89","rv":"13º","m2":["0","717","394","350","853","1260","1469","267","633","801","551","524","425","253","1387","302","323","3103","10509"],"sd":[20836100.0,9740540.0,25153500.0,12367800.0,36935000.0,19194600.0,14244700.0,7161880.0,25253200.0,11377800.0,10225900.0,4347880.0,9670280.0,0,0,0,0,0,0]},
+            {"l":"Contagem","rg":"Sudeste","c":"GSB","p":"BC","i":"2000-05-17","e":"PRÓPRIO","cl":"11230","ck":"P: 10 | G: 0 | S: 6 | T: 16","po":"3","pn":"104","rv":"12º","m2":["0","849","422","359","725","1169","1589","270","500","880","607","377","466","197","2271","239","310","0","11230"],"sd":[20776800.0,8388050.0,24301800.0,13013100.0,38653800.0,29443400.0,21330700.0,6371670.0,19789100.0,11455500.0,9872900.0,4467770.0,13487100.0,0,0,0,0,0,0]},
+            {"l":"Bh Norte","rg":"Sudeste","c":"GSB","p":"BC","i":"2013-04-02","e":"ALUGADO","cl":"10957","ck":"P: 4 | G: 8 | S: 6 | T: 18","po":"3","pn":"96","rv":"21º","m2":["685","838","387","385","742","1130","1330","295","598","907","637","616","513","72","1189","329","304","3137","10957"],"sd":[15379000.0,6242320.0,20927500.0,10603900.0,27087400.0,26402600.0,20466700.0,5996430.0,15557000.0,11412700.0,10790900.0,4763810.0,12041200.0,0,0,0,0,0,0]},
+            {"l":"Bh Sul","rg":"Sudeste","c":"GSB","p":"AB","i":"2009-05-06","e":"PRÓPRIO","cl":"8244","ck":"P: 2 | G: 8 | S: 6 | T: 16","po":"2","pn":"98","rv":"22º","m2":["297","620","251","241","598","978","1413","237","460","779","494","344","422","95","500","256","259","0","8244"],"sd":[12188600.0,5709690.0,15917300.0,7499590.0,26376800.0,25786100.0,23013300.0,7061950.0,13536100.0,16960300.0,9758660.0,6800140.0,12966100.0,0,0,0,0,0,0]},
+            {"l":"Express bh São Pedro","rg":"Sudeste","c":"EXPRESS","p":"AB","i":"2023-10-01","e":"ALUGADO","cl":"808","ck":"P: 2 | G: 0 | S: 2 | T: 4","po":"1","pn":"25","rv":"52º","m2":["67","10","116","54","10","72","47","62","122","29","77","25","42","21","0","33","21","9","808"],"sd":[515736.0,71382.0,1458000.0,794194.0,385241.0,1825660.0,1159170.0,940846.0,1595070.0,580940.0,479827.0,377704.0,932488.0,0,0,0,0,0,0]},
+            {"l":"Express Leblon","rg":"Sudeste","c":"EXPRESS","p":"AB","i":"2024-05-07","e":"ALUGADO","cl":"592","ck":"P: 2 | G: 0 | S: 2 | T: 4","po":"0","pn":"16","rv":"50º","m2":["23","10","91","27","22","78","27","28","99","31","46","16","39","0","0","39","16","0","592"],"sd":[524058.0,249771.0,3258550.0,666221.0,835688.0,1850720.0,520838.0,890309.0,2296600.0,586200.0,968939.0,341754.0,817198.0,0,0,0,0,0,0]},
+            {"l":"Niteroi","rg":"Sudeste","c":"GSB","p":"BC","i":"2009-10-28","e":"PRÓPRIO","cl":"6981","ck":"P: 10 | G: 2 | S: 6 | T: 18","po":"2","pn":"87","rv":"16º","m2":["350","647","240","233","473","1098","760","175","537","752","384","265","476","70","0","278","243","0","6981"],"sd":[16549200.0,8194050.0,29136800.0,10194000.0,33105000.0,23570000.0,16958600.0,5462500.0,18853000.0,11222500.0,11740500.0,4418040.0,9410350.0,0,0,0,0,0,0]},
+            {"l":"Rio Barra","rg":"Sudeste","c":"GSB","p":"AB","i":"2003-03-18","e":"PRÓPRIO","cl":"9704","ck":"P: 10 | G: 0 | S: 10 | T: 20","po":"3","pn":"98","rv":"3º","m2":["197","755","450","402","611","1193","1605","264","528","943","546","413","454","93","721","312","217","2881","9704"],"sd":[19381300.0,14516000.0,55727200.0,13908600.0,55859700.0,39433700.0,32106900.0,14435600.0,34413400.0,27557200.0,24520600.0,10015500.0,18468200.0,0,0,0,0,0,0]},
+            {"l":"Rio Norte","rg":"Sudeste","c":"GSB","p":"BC","i":"2001-08-22","e":"PRÓPRIO","cl":"10413","ck":"P: 14 | G: 0 | S: 6 | T: 20","po":"3","pn":"100","rv":"10º","m2":["471","827","427","342","630","1314","1408","348","668","656","756","428","437","108","1053","313","227","3699","10413"],"sd":[20964500.0,9493290.0,36527900.0,10973900.0,37221700.0,25431500.0,18174500.0,6739540.0,27623800.0,9300440.0,12730300.0,4091330.0,10773300.0,0,0,0,0,0,0]},
+            {"l":"Uberlândia","rg":"Sudeste","c":"GSB","p":"BC","i":"2011-12-08","e":"ALUGADO","cl":"7624","ck":"P: 9 | G: 1 | S: 3 | T: 13","po":"4","pn":"74","rv":"43º","m2":["0","566","384","264","590","958","930","206","327","470","365","212","129","160","1630","213","220","3073","7624"],"sd":[6357100.0,4231510.0,12490900.0,8015200.0,8760980.0,11602200.0,10870100.0,3393200.0,5762450.0,4877510.0,4478820.0,2449060.0,6113420.0,0,0,0,0,0,0]},
+            {"l":"Vitória","rg":"Sudeste","c":"GSB","p":"BC","i":"2019-12-13","e":"ALUGADO","cl":"8808","ck":"P: 8 | G: 0 | S: 6 | T: 14","po":"3","pn":"86","rv":"28º","m2":["0","1347","296","274","583","1185","880","249","469","588","487","323","385","133","1180","177","252","1000","8808"],"sd":[9556950.0,7159850.0,25003700.0,9922460.0,18416500.0,22067600.0,18770600.0,7248630.0,11644300.0,12391900.0,9574650.0,6688000.0,14847900.0,0,0,0,0,0,0]},
+            {"l":"Curitiba","rg":"Sul","c":"GSB","p":"BC","i":"2002-05-28","e":"PRÓPRIO","cl":"10191","ck":"P: 14 | G: 0 | S: 6 | T: 20","po":"3","pn":"101","rv":"23º","m2":["535","589","348","304","779","1315","1189","300","541","787","530","586","486","99","1261","302","240","0","10191"],"sd":[10922100.0,7717630.0,22527700.0,10631500.0,23154400.0,23172700.0,20018100.0,7304450.0,14535000.0,13471400.0,11068200.0,5346010.0,12492200.0,0,0,0,0,0,0]},
+            {"l":"Curitiba Atuba","rg":"Sul","c":"GSB","p":"BC","i":"2012-12-11","e":"PRÓPRIO","cl":"9670","ck":"P: 8 | G: 0 | S: 4 | T: 12","po":"3","pn":"99","rv":"41º","m2":["349","539","345","340","751","1058","866","272","572","760","535","346","456","220","1727","267","267","2139","9670"],"sd":[8110940.0,4337840.0,14016100.0,8477230.0,15469400.0,13705100.0,12539400.0,3969430.0,9008420.0,6572410.0,5960590.0,2764420.0,7033180.0,0,0,0,0,0,0]},
+            {"l":"Joinville","rg":"Sul","c":"GSB","p":"BC","i":"2024-08-03","e":"ALUGADO","cl":"9393","ck":"P: 8 | G: 0 | S: 8 | T: 16","po":"4","pn":"89","rv":"45º","m2":["72","598","466","357","782","1008","1600","249","414","634","461","299","357","131","1570","338","57","0","9393"],"sd":[4101860.0,2589390.0,11420900.0,3564590.0,6936720.0,7511290.0,7535650.0,2004930.0,3138140.0,3896670.0,3268090.0,1604090.0,5894190.0,0,0,0,0,0,0]},
+            {"l":"Londrina","rg":"Sul","c":"GSB","p":"BC","i":"2012-10-17","e":"PRÓPRIO","cl":"9894","ck":"P: 0 | G: 10 | S: 3 | T: 13","po":"3","pn":"102","rv":"42º","m2":["474","653","603","297","868","1077","969","228","568","937","484","565","219","185","1145","260","362","3288","9894"],"sd":[8007030.0,4430570.0,12255200.0,8106260.0,13812000.0,15416700.0,11916600.0,4097380.0,7338060.0,5988700.0,6135680.0,2769100.0,7338150.0,0,0,0,0,0,0]},
+            {"l":"Poa Estaleiro","rg":"Sul","c":"GSB","p":"AB","i":"2022-05-26","e":"PRÓPRIO","cl":"9004","ck":"P: 10 | G: 0 | S: 6 | T: 16","po":"4","pn":"100","rv":"38º","m2":["266","885","616","445","679","934","1003","257","491","821","454","418","494","292","301","302","346","324","9004"],"sd":[8391560.0,7216040.0,15876200.0,6430830.0,16654800.0,14086600.0,11507900.0,4152240.0,11491600.0,9686440.0,9351010.0,3410320.0,7679320.0,0,0,0,0,0,0]},
+            {"l":"Porto Alegre","rg":"Sul","c":"GSB","p":"BC","i":"2009-04-23","e":"PRÓPRIO","cl":"8766","ck":"P: 8 | G: 6 | S: 6 | T: 20","po":"2","pn":"90","rv":"14º","m2":["170","602","335","336","655","1148","1071","203","653","894","538","381","403","115","840","302","120","0","8766"],"sd":[14300900.0,14307700.0,27358000.0,13418500.0,29192500.0,22241900.0,14769800.0,6610760.0,20368000.0,12062400.0,11982900.0,4635350.0,11873000.0,0,0,0,0,0,0]},
+            {"l":"São José","rg":"Sul","c":"GSB","p":"BC","i":"2014-06-11","e":"PRÓPRIO","cl":"10196","ck":"P: 8 | G: 1 | S: 6 | T: 15","po":"3","pn":"102","rv":"35º","m2":["574","846","605","309","861","961","978","208","624","1066","593","591","96","111","1206","300","267","2979","10196"],"sd":[9262150.0,7502330.0,20787500.0,6839500.0,13478000.0,15153200.0,17081300.0,4831690.0,8861590.0,10444100.0,7326100.0,4678160.0,11070500.0,0,0,0,0,0,0]},
+            {"l":"São Leopoldo","rg":"Sul","c":"GSB","p":"BC","i":"2012-10-08","e":"PRÓPRIO","cl":"8202","ck":"P: 4 | G: 5 | S: 3 | T: 12","po":"3","pn":"91","rv":"34º","m2":["265","651","545","370","845","878","1099","276","551","858","462","324","393","251","0","223","211","2111","8202"],"sd":[12844600.0,8009780.0,17459100.0,8651570.0,23063800.0,17010400.0,14042200.0,3739890.0,9636560.0,8895000.0,7960290.0,2999980.0,8815730.0,0,0,0,0,0,0]}
+        ];
 
         let currentFilterConcept = 'TODAS LOJAS';
 
+        // Elementos DOM
         const totalLojasEl = document.getElementById('total-lojas');
         const selectEl = document.getElementById('loja-select');
         const filterBtns = document.querySelectorAll('.filter-btn');
         const quadrantes = document.querySelectorAll('.quadrante');
-        let myChart = null; 
+        const badgesLoja = document.querySelectorAll('.badge-quadrante');
 
-        // Elementos da NOVA LINHA MAIOR/MENOR
         const labelMaior = document.getElementById('label-maior');
         const valMaior = document.getElementById('val-maior-loja');
         const labelMenor = document.getElementById('label-menor');
         const valMenor = document.getElementById('val-menor-loja');
+
+        const badgeFiltroRegional = document.getElementById('badge-filtro-regional');
+        const badgeFiltroPublico = document.getElementById('badge-filtro-publico');
+
+        // Instâncias de Gráficos
+        let chartRegionalInstance = null;
+        let chartPublicoInstance = null;
+        let myChart = null; 
+
+        // Paletas de Cores Exclusivas para Cada Coluna
+        const coresRegional = [
+            '#3182ce', // Centro Nordeste (Azul)
+            '#dd6b20', // Interior - SP (Laranja)
+            '#00A650', // São Paulo (Verde Leroy)
+            '#805ad5', // Sudeste (Roxo)
+            '#e53e3e'  // Sul (Vermelho)
+        ];
+        const coresRegionalHover = [
+            '#2b6cb0', '#c05621', '#008f45', '#6b46c1', '#c53030'
+        ];
+
+        const coresPublico = [
+            '#00A650', // Público AB (Verde)
+            '#3182ce'  // Público BC (Azul)
+        ];
+        const coresPublicoHover = [
+            '#008f45', '#2b6cb0'
+        ];
 
         const fieldsGerais = {
             'c': document.getElementById('val-conceito'),
@@ -409,7 +663,6 @@
                 }
             });
 
-            // Inicia o painel
             filterStores('TODAS LOJAS');
         }
 
@@ -419,22 +672,13 @@
                 filtered = rawData.filter(s => s.c.toUpperCase().includes(concept.toUpperCase()));
             }
             
-            // Popula o Dropdown
             populateSelect(filtered);
-            
-            // Atualiza Lógica Maior/Menor
             updateMaiorMenor(concept, filtered);
-            
-            // Auto-seleciona a primeira loja da lista (para evitar a tela em branco)
-            if (filtered.length > 0) {
-                // Seleciona a maior loja do filtro atual
-                let sortedForSelect = [...filtered].sort((a,b) => parseFloat(b.cl || 0) - parseFloat(a.cl || 0));
-                selectEl.value = sortedForSelect[0].l;
-                updateDashboard(sortedForSelect[0]);
-            } else {
-                clearGridInfo();
-                applyTheme(concept === 'TODAS LOJAS' ? '' : concept);
-            }
+            renderTopCharts(concept, filtered);
+
+            selectEl.value = "";
+            clearGridInfo();
+            applyTheme(concept === 'TODAS LOJAS' ? '' : concept);
         }
 
         function populateSelect(data) {
@@ -447,7 +691,6 @@
             });
         }
 
-        // Calcula a Maior e a Menor loja com base no conceito clicado
         function updateMaiorMenor(concept, list) {
             let suffix = '';
             if (concept && concept !== 'TODAS LOJAS') {
@@ -491,8 +734,134 @@
             }
         }
 
+        function updateBadgesLoja(nomeLoja) {
+            badgesLoja.forEach(badge => {
+                if(nomeLoja) {
+                    badge.style.display = 'inline-flex';
+                    badge.innerHTML = `📍 <strong>${nomeLoja}</strong>`;
+                } else {
+                    badge.style.display = 'none';
+                    badge.textContent = '';
+                }
+            });
+        }
+
+        // RENDERIZAÇÃO DOS 2 GRÁFICOS DO QUADRANTE SUPERIOR (CADA COLUNA COM SUA COR E QUANTIDADE NO TOPO)
+        function renderTopCharts(concept, filteredData) {
+            badgeFiltroRegional.textContent = concept;
+            badgeFiltroPublico.textContent = concept;
+
+            // 1. Agrupamento por Regional
+            const regionais = ['Centro Nordeste', 'Interior - SP', 'São Paulo', 'Sudeste', 'Sul'];
+            const contagemRegional = { 'Centro Nordeste': 0, 'Interior - SP': 0, 'São Paulo': 0, 'Sudeste': 0, 'Sul': 0 };
+            
+            filteredData.forEach(st => {
+                if(contagemRegional[st.rg] !== undefined) {
+                    contagemRegional[st.rg]++;
+                }
+            });
+            const dataRegional = regionais.map(r => contagemRegional[r]);
+
+            // 2. Agrupamento por Público
+            const publicos = ['Público AB', 'Público BC'];
+            const contagemPublico = { 'Público AB': 0, 'Público BC': 0 };
+            filteredData.forEach(st => {
+                const p = String(st.p || '').trim().toUpperCase();
+                if(p === 'AB') contagemPublico['Público AB']++;
+                if(p === 'BC') contagemPublico['Público BC']++;
+            });
+            const dataPublico = [contagemPublico['Público AB'], contagemPublico['Público BC']];
+
+            // Renderizar Gráfico de Regional com Cores Individuais por Coluna
+            const ctxRegional = document.getElementById('chartRegional').getContext('2d');
+            if(chartRegionalInstance) chartRegionalInstance.destroy();
+            chartRegionalInstance = new Chart(ctxRegional, {
+                type: 'bar',
+                data: {
+                    labels: regionais,
+                    datasets: [{
+                        label: 'Lojas',
+                        data: dataRegional,
+                        backgroundColor: coresRegional,
+                        hoverBackgroundColor: coresRegionalHover,
+                        borderRadius: 6,
+                        barPercentage: 0.62
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: { top: 20 }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        topValuePlugin: { enabled: true },
+                        tooltip: {
+                            callbacks: {
+                                label: (c) => ` ${c.raw} ${c.raw === 1 ? 'Loja' : 'Lojas'}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grace: '18%',
+                            ticks: { stepSize: 2, precision: 0 },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Renderizar Gráfico de Público com Cores Individuais por Coluna
+            const ctxPublico = document.getElementById('chartPublico').getContext('2d');
+            if(chartPublicoInstance) chartPublicoInstance.destroy();
+            chartPublicoInstance = new Chart(ctxPublico, {
+                type: 'bar',
+                data: {
+                    labels: publicos,
+                    datasets: [{
+                        label: 'Lojas',
+                        data: dataPublico,
+                        backgroundColor: coresPublico,
+                        hoverBackgroundColor: coresPublicoHover,
+                        borderRadius: 6,
+                        barPercentage: 0.52
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: { top: 20 }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        topValuePlugin: { enabled: true },
+                        tooltip: {
+                            callbacks: {
+                                label: (c) => ` ${c.raw} ${c.raw === 1 ? 'Loja' : 'Lojas'}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grace: '18%',
+                            ticks: { stepSize: 5, precision: 0 },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
         function updateDashboard(store) {
             applyTheme(store.c);
+            updateBadgesLoja(store.l);
 
             for(let key in fieldsGerais) {
                 let textValue = store[key];
@@ -518,8 +887,8 @@
                         let ratio = salesVal / m2Num;
                         let ratioStr = `R$ ${Math.round(ratio).toLocaleString('pt-BR')} /m²`;
                         
-                        let colorHex = '#00A650'; // GSB
-                        if (store.c.toUpperCase().includes('COMPACTA')) colorHex = '#6b46c1';
+                        let colorHex = '#00A650';
+                        if (store.c.toUpperCase().includes('COMPACTA')) colorHex = '#805ad5';
                         if (store.c.toUpperCase().includes('EXPRESS')) colorHex = '#3182ce';
 
                         el.innerHTML = m2ValStr + ' m²<br><span style="color:' + colorHex + '; font-size:13px; text-transform:none; font-weight: bold;">' + ratioStr + '</span>';
@@ -586,6 +955,7 @@
                     responsive: true, maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
                     plugins: {
+                        topValuePlugin: { enabled: false },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
@@ -620,6 +990,7 @@
         }
 
         function clearGridInfo() {
+            updateBadgesLoja(null);
             for(let key in fieldsGerais) { fieldsGerais[key].textContent = '-'; }
             keysAreas.forEach(k => {
                 let el = document.getElementById('val-' + k);
